@@ -333,17 +333,22 @@ extension ArgumentSet {
           try update(origins, parsed.name, value, &result)
           usedOrigins.formUnion(origins)
         }
+        
+      case .allUnrecognizedInput:
+        // Should never have an option with `.allUnrecognizedInput`; that
+        // behavior is only for argument arrays.
+        throw ParserError.invalidState
       }
     }
     
     // If this argument set includes a positional argument that unconditionally
     // captures all remaining input, we use a different behavior, where we
-    // shortcut out at the first sign of a positional argument or unrecognized
-    // option/flag label.
+    // shortcut after matching the known positional arguments or at the
+    // first unrecognized option/flag label.
     let capturesAll = self.contains(where: { arg in
       arg.isRepeatingPositional && arg.parsingStrategy == .allRemainingInput
     })
-    
+
     var result = ParsedValues(elements: [:], originalInput: all.originalInput)
     var allUsedOrigins = InputOrigin()
     
@@ -481,7 +486,8 @@ extension ArgumentSet {
       guard case let .unary(update) = argumentDefinition.update else {
         preconditionFailure("Shouldn't see a nullary positional argument.")
       }
-      let allowOptionsAsInput = argumentDefinition.parsingStrategy == .allRemainingInput
+      let allowOptionsAsInput =
+        argumentDefinition.parsingStrategy.allowOptionsAsInput
       
       repeat {
         guard let origin = next(unconditional: allowOptionsAsInput) else {

@@ -208,6 +208,10 @@ public struct ArgumentArrayParsingStrategy: Hashable {
   public static var unconditionalRemaining: ArgumentArrayParsingStrategy {
     self.init(base: .allRemainingInput)
   }
+  
+  public static var unrecognizedRemaining: ArgumentArrayParsingStrategy {
+    self.init(base: .allUnrecognizedInput)
+  }
 }
 
 extension Argument {

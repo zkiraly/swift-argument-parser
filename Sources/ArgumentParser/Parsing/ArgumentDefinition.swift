@@ -97,6 +97,12 @@ struct ArgumentDefinition {
     case upToNextOption
     /// Parse all remaining `SplitArguments.Element` as values, regardless of its type.
     case allRemainingInput
+
+    case allUnrecognizedInput
+    
+    var allowOptionsAsInput: Bool {
+      self == .allRemainingInput || self == .allUnrecognizedInput
+    }
   }
   
   var kind: Kind

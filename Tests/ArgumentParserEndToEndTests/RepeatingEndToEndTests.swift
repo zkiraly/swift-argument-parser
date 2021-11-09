@@ -448,3 +448,26 @@ extension RepeatingEndToEndTests {
     XCTAssertLessThan(timeFor40, timeFor20 * 10)
   }
 }
+
+extension RepeatingEndToEndTests {
+  private struct AllRemaining: ParsableCommand {
+    @Argument var name: String?
+    @Option var age: Int = 0
+    @Argument(parsing: .unconditionalRemaining)
+    var remaining: [String] = []
+  }
+  
+  func testAllRemaining() {
+    AssertParse(AllRemaining.self, ["--age", "10", "name", "one", "--two", "three"]) { cmd in
+      XCTAssertEqual(cmd.age, 10)
+      XCTAssertEqual(cmd.name, "name")
+      XCTAssertEqual(cmd.remaining, ["one", "--two", "three"])
+    }
+
+    AssertParse(AllRemaining.self, ["name", "--age", "10", "one", "--two", "three"]) { cmd in
+      XCTAssertEqual(cmd.age, 0)
+      XCTAssertEqual(cmd.name, "name")
+      XCTAssertEqual(cmd.remaining, ["--age", "10", "one", "--two", "three"])
+    }
+  }
+}
