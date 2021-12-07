@@ -14,8 +14,7 @@ import Foundation
 
 // MARK: Command
 
-@main
-struct ChangelogAuthors: AsyncParsableCommand {  
+struct ChangelogAuthors: AsyncParsableCommand {
   static var configuration: CommandConfiguration {
     CommandConfiguration(
       abstract: "A helper tool for generating author info for the changelog.",
@@ -99,4 +98,8 @@ struct ChangelogAuthors: AsyncParsableCommand {
     print("---")
     print(references(for: authors))
   }
+}
+
+@main enum Main: AsyncMain {
+  typealias Command = ChangelogAuthors
 }

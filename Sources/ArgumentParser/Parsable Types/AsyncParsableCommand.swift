@@ -10,78 +10,31 @@
 //===----------------------------------------------------------------------===//
 
 /// A type that can be executed as part of a nested tree of commands.
-public protocol AsyncParsableCommand: ParsableArguments {
-  /// Runs this command.
-  ///
-  /// After implementing this method, you can run your command-line
-  /// application by calling the static `main()` method on the root type.
-  /// This method has a default implementation that prints help text
-  /// for this command.
+public protocol AsyncParsableCommand: ParsableCommand {
   mutating func run() async throws
 }
 
 extension AsyncParsableCommand {
-  public mutating func run() async throws {
-    throw CleanExit.helpRequest(Self.asCommand)
+  public mutating func run() throws {
+    throw CleanExit.helpRequest(self)
   }
 }
 
-// MARK: - API
+public protocol AsyncMain {
+  associatedtype Command: ParsableCommand
+}
 
-extension AsyncParsableCommand {
-  /// Parses an instance of this type, or one of its subcommands, from
-  /// command-line arguments.
-  ///
-  /// - Parameter arguments: An array of arguments to use for parsing. If
-  ///   `arguments` is `nil`, this uses the program's command-line arguments.
-  /// - Returns: A new instance of this type, one of its subcommands, or a
-  ///   command type internal to the `ArgumentParser` library.
-  public static func parseAsRoot(
-    _ arguments: [String]? = nil
-  ) throws -> AsyncParsableCommand {
-    var parser = CommandParser(self.asCommand)
-    let arguments = arguments ?? Array(CommandLine.arguments.dropFirst())
-    return try parser.parse(arguments: arguments).get() as! AsyncParsableCommand
-  }
-  
-  /// Returns the text of the help screen for the given subcommand of this
-  /// command.
-  ///
-  /// - Parameters:
-  ///   - subcommand: The subcommand to generate the help screen for.
-  ///     `subcommand` must be declared in the subcommand tree of this
-  ///     command.
-  ///   - columns: The column width to use when wrapping long line in the
-  ///     help screen. If `columns` is `nil`, uses the current terminal
-  ///     width, or a default value of `80` if the terminal width is not
-  ///     available.
-  public static func helpMessage(
-    for subcommand: ParsableCommand.Type,
-    columns: Int? = nil
-  ) -> String { 
-    let stack = CommandParser(self.asCommand).commandStack(for: subcommand)
-    return HelpGenerator(commandStack: stack).rendered(screenWidth: columns)
-  }
-
-  /// Parses an instance of this type, or one of its subcommands, from
-  /// the given arguments and calls its `run()` method, exiting with a
-  /// relevant error message if necessary.
-  ///
-  /// - Parameter arguments: An array of arguments to use for parsing. If
-  ///   `arguments` is `nil`, this uses the program's command-line arguments.
-  public static func main(_ arguments: [String]?) async {
-    do {
-      var command = try parseAsRoot(arguments)
-      try await command.run()
-    } catch {
-      exit(withError: error)
-    }
-  }
-
-  /// Parses an instance of this type, or one of its subcommands, from
-  /// command-line arguments and calls its `run()` method, exiting with a
-  /// relevant error message if necessary.
+extension AsyncMain {
   public static func main() async {
-    await self.main(nil)
+    do {
+      var command = try Command.parseAsRoot()
+      if var command = command as? AsyncParsableCommand {
+        try await command.run()
+      } else {
+        try command.run()
+      }
+    } catch {
+      Command.exit(withError: error)
+    }
   }
 }
