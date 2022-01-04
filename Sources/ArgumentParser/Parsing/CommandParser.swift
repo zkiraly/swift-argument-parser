@@ -368,8 +368,12 @@ extension CommandParser {
 }
 
 extension SplitArguments {
-  func contains(_ needle: Name) -> Bool {
+  func contains(_ needle: Name, isStandalone: Bool = false) -> Bool {
     self.elements.contains {
+      if isStandalone && $0.index.subIndex != .complete {
+        return false
+      }
+      
       switch $0.value {
       case .option(.name(let name)),
            .option(.nameWithValue(let name, _)):
@@ -380,8 +384,12 @@ extension SplitArguments {
     }
   }
 
-  func contains(anyOf names: [Name]) -> Bool {
+  func contains(anyOf names: [Name], isStandalone: Bool = false) -> Bool {
     self.elements.contains {
+      if isStandalone && $0.index.subIndex != .complete {
+        return false
+      }
+      
       switch $0.value {
       case .option(.name(let name)),
            .option(.nameWithValue(let name, _)):
