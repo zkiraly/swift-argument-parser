@@ -75,7 +75,7 @@ extension CommandParser {
   /// built in help flags.
   func checkForBuiltInFlags(_ split: SplitArguments) throws {
     // Look for help flags
-    guard !split.contains(anyOf: self.commandStack.getHelpNames()) else {
+    guard !split.contains(anyOf: self.commandStack.getHelpNames(), isStandalone: true) else {
       throw HelpRequested()
     }
     
