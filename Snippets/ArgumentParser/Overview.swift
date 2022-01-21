@@ -5,12 +5,9 @@
 //
 //  Created by Zsolt Kiraly on 1/21/22.
 //
-
-import Foundation
 // MARK: Show
 import ArgumentParser
 
-@main
 struct Repeat: ParsableCommand {
     @Argument(help: "The phrase to repeat.")
     var phrase: String

@@ -12,6 +12,8 @@ Decorate each stored property with one of `ArgumentParser`'s property wrappers,
 declare conformance to ``ParsableCommand``,
 and implement your command's logic in its `run()` method.
 
+@Snippet(path: "swift-argument-parser/ArgumentParser/Overview")
+
 ```swift
 import ArgumentParser
 

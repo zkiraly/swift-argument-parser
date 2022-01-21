@@ -51,6 +51,11 @@ let package = Package(
             name: "changelog-authors",
             dependencies: ["ArgumentParser"],
             path: "Tools/changelog-authors"),
+        
+//        .executableTarget(
+//            name: "overview-snippet",
+//            dependencies: ["ArgumentParser"],
+//            path: "Snippets/ArgumentParser"),
 
         .testTarget(
             name: "ArgumentParserEndToEndTests",
