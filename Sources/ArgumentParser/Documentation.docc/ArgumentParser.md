@@ -14,26 +14,6 @@ and implement your command's logic in its `run()` method.
 
 @Snippet(path: "swift-argument-parser/ArgumentParser/Overview")
 
-```swift
-import ArgumentParser
-
-@main
-struct Repeat: ParsableCommand {
-    @Argument(help: "The phrase to repeat.")
-    var phrase: String
-
-    @Option(help: "The number of times to repeat 'phrase'.")
-    var count: Int?
-
-    mutating func run() throws {
-        let repeatCount = count ?? .max
-        for _ in 0..<repeatCount {
-            print(phrase)
-        }
-    }
-}
-```
-
 When a user executes your command, 
 the `ArgumentParser` library parses the command-line arguments,
 instantiates your command type,
