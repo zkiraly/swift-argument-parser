@@ -37,14 +37,7 @@ SUBCOMMANDS:
 
 Start by defining the root `Math` command. You can provide a static `configuration` property for a command that specifies its subcommands and a default subcommand, if any.
 
-```swift
-struct Math: ParsableCommand {
-    static var configuration = CommandConfiguration(
-        abstract: "A utility for performing maths.",
-        subcommands: [Add.self, Multiply.self, Statistics.self],
-        defaultSubcommand: Add.self)
-}
-```
+@Snippet(path: "swift-argument-parser/ArgumentParser/Commands1-math")
 
 `Math` lists its three subcommands by their types; we'll see the definitions of `Add`, `Multiply`, and `Statistics` below. `Add` is also given as a default subcommand — this means that it is selected if a user leaves out a subcommand name:
 
@@ -57,126 +50,22 @@ Next, define a `ParsableArguments` type with properties that will be shared acro
 
 In this case, the `Options` type accepts a `--hexadecimal-output` flag and expects a list of integers.
 
-```swift
-struct Options: ParsableArguments {
-    @Flag(name: [.long, .customShort("x")], help: "Use hexadecimal notation for the result.")
-    var hexadecimalOutput = false
-
-    @Argument(help: "A group of integers to operate on.")
-    var values: [Int]
-}
-```
+@Snippet(path: "swift-argument-parser/ArgumentParser/Commands2-hex")
 
 It's time to define our first two subcommands: `Add` and `Multiply`. Both of these subcommands include the arguments defined in the `Options` type by denoting that property with the `@OptionGroup` property wrapper. `@OptionGroup` doesn't define any new arguments for a command; instead, it splats in the arguments defined by another `ParsableArguments` type.
 
-```swift
-extension Math {
-    struct Add: ParsableCommand {
-        static var configuration
-            = CommandConfiguration(abstract: "Print the sum of the values.")
-
-        @OptionGroup var options: Math.Options
-
-        mutating func run() {
-            let result = options.values.reduce(0, +)
-            print(format(result: result, usingHex: options.hexadecimalOutput))
-        }
-    }
-
-    struct Multiply: ParsableCommand {
-        static var configuration
-            = CommandConfiguration(abstract: "Print the product of the values.")
-
-        @OptionGroup var options: Math.Options
-
-        mutating func run() {
-            let result = options.values.reduce(1, *)
-            print(format(result: result, usingHex: options.hexadecimalOutput))
-        }
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/ArgumentParser/Commands3-add")
 
 Next, we'll define `Statistics`, the third subcommand of `Math`. The `Statistics` command specifies a custom command name (`stats`) in its configuration, overriding the default derived from the type name (`statistics`). It also declares two additional subcommands, meaning that it acts as a forked branch in the command tree, and not a leaf.
 
-```swift
-extension Math {
-    struct Statistics: ParsableCommand {
-        static var configuration = CommandConfiguration(
-            commandName: "stats",
-            abstract: "Calculate descriptive statistics.",
-            subcommands: [Average.self, StandardDeviation.self])
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/ArgumentParser/Commands4-stats")
 
 Let's finish our subcommands with the `Average` and `StandardDeviation` types. Each of them has slightly different arguments, so they don't use the `Options` type defined above. Each subcommand is ultimately independent and can specify a combination of shared and unique arguments.
 
-```swift
-extension Math.Statistics {
-    struct Average: ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Print the average of the values.")
-
-        enum Kind: String, ExpressibleByArgument {
-            case mean, median, mode
-        }
-
-        @Option(help: "The kind of average to provide.")
-        var kind: Kind = .mean
-
-        @Argument(help: "A group of floating-point values to operate on.")
-        var values: [Double] = []
-
-        func calculateMean() -> Double { ... }
-        func calculateMedian() -> Double { ... }
-        func calculateMode() -> [Double] { ... }
-
-        mutating func run() {
-            switch kind {
-            case .mean:
-                print(calculateMean())
-            case .median:
-                print(calculateMedian())
-            case .mode:
-                let result = calculateMode()
-                    .map(String.init(describing:))
-                    .joined(separator: " ")
-                print(result)
-            }
-        }
-    }
-
-    struct StandardDeviation: ParsableCommand {
-        static var configuration = CommandConfiguration(
-            commandName: "stdev",
-            abstract: "Print the standard deviation of the values.")
-
-        @Argument(help: "A group of floating-point values to operate on.")
-        var values: [Double] = []
-
-        mutating func run() {
-            if values.isEmpty {
-                print(0.0)
-            } else {
-                let sum = values.reduce(0, +)
-                let mean = sum / Double(values.count)
-                let squaredErrors = values
-                    .map { $0 - mean }
-                    .map { $0 * $0 }
-                let variance = squaredErrors.reduce(0, +)
-                let result = variance.squareRoot()
-                print(result)
-            }
-        }
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/ArgumentParser/Commands5-average")
 
 Last but not least, we kick off parsing and execution with a call to the static `main` method on the type at the root of our command tree. The call to main parses the command-line arguments, determines whether a subcommand was selected, and then instantiates and calls the `run()` method on that particular subcommand.
 
-```swift
-Math.main()
-```
+@Snippet(path: "swift-argument-parser/ArgumentParser/Commands6-main")
 
 That's it for this doubly-nested `math` command! This example is also provided as a part of the `swift-argument-parser` repository, so you can see it all together and experiment with it [here](https://github.com/apple/swift-argument-parser/blob/main/Examples/math/main.swift).
