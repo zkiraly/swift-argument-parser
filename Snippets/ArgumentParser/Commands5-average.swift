@@ -84,10 +84,6 @@ extension Math.Statistics {
         @Argument(help: "A group of floating-point values to operate on.")
         var values: [Double] = []
 
-        func calculateMean() -> Double { return 0 }
-        func calculateMedian() -> Double { return 0 }
-        func calculateMode() -> [Double] { return [ 0 ] }
-
         mutating func run() {
             switch kind {
             case .mean:
@@ -128,6 +124,12 @@ extension Math.Statistics {
     }
 }
 // MARK: Hide
+
+extension Math.Statistics.Average {
+    func calculateMean() -> Double { return 0 }
+    func calculateMedian() -> Double { return 0 }
+    func calculateMode() -> [Double] { return [ 0 ] }
+}
 
 Math.main()
 
