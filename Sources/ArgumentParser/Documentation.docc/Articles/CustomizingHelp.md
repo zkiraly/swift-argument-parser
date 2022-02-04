@@ -6,7 +6,7 @@ Support your users (and yourself) by providing rich help for arguments and comma
 
 You can provide help text when declaring any `@Argument`, `@Option`, or `@Flag` by passing a string literal as the `help` parameter:
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/Help1")
+@Snippet(path: "swift-argument-parser/Help/Help1")
 
 Users see these strings in the automatically-generated help screen, which is triggered by the `-h` or `--help` flags, by default:
 
@@ -30,7 +30,7 @@ You can have more control over the help text by passing an `ArgumentHelp` instan
 
 Here's the same command with some extra customization:
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/Help2")
+@Snippet(path: "swift-argument-parser/Help/Help2")
 
 ...and the help screen:
 
@@ -51,7 +51,7 @@ OPTIONS:
 
 In addition to configuring the command name and subcommands, as described in <doc:CommandsAndSubcommands>, you can also configure a command's help text by providing an abstract and discussion.
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/Help3")
+@Snippet(path: "swift-argument-parser/Help/Help3")
 
 The abstract and discussion appear in the generated help screen:
 
@@ -83,7 +83,7 @@ hello!
 
 Users can see the help screen for a command by passing either the `-h` or the `--help` flag, by default. If you need to use one of those flags for another purpose, you can provide alternative names when configuring a root command.
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/Help4")
+@Snippet(path: "swift-argument-parser/Help/Help4")
 
 When running the command, `-h` matches the short name of the `historyDepth` property, and `-?` displays the help screen.
 
@@ -103,7 +103,7 @@ OPTIONS:
 
 When not overridden, custom help names are inherited by subcommands. In this example, the parent command defines `--help` and `-?` as its help names:
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/Help5")
+@Snippet(path: "swift-argument-parser/Help/Help5")
 
 The `child` subcommand inherits the parent's help names, allowing the user to distinguish between the host argument (`-h`) and help (`-?`).
 
@@ -124,12 +124,12 @@ You may want to suppress features under development or experimental flags from t
 
 `ArgumentHelp` includes a `.hidden` static property that makes it even simpler to hide arguments:
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/Help6")
+@Snippet(path: "swift-argument-parser/Help/Help6")
 
 ## Generating Help Text Programmatically
 
 The help screen is automatically shown to users when they call your command with the help flag. You can generate the same text from within your program by calling the `helpMessage()` method.
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/Help7")
+@Snippet(path: "swift-argument-parser/Help/Help7")
 
 When generating help text for a subcommand, call `helpMessage(for:)` on the `ParsableCommand` type that represents the root of the command tree and pass the subcommand type as a parameter to ensure the correct display.
