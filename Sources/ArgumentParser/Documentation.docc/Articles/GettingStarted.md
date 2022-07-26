@@ -44,7 +44,7 @@ Counting words in 'readme.md' and writing the result into 'readme.counts'.
 
 We'll define the initial version of the command as a type that conforms to the `ParsableCommand` protocol:
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/GettingStarted1-first")
+@Snippet(path: "swift-argument-parser/GettingStarted/GettingStarted1-first")
 
 In the code above, the `inputFile` and `outputFile` properties use the `@Argument` property wrapper. `ArgumentParser` uses this wrapper to denote a positional command-line input — because `inputFile` is specified first in the `Count` type, it's the first value read from the command line, and `outputFile` is read second.
 

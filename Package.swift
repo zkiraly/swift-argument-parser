@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version: 5.7
 //===----------------------------------------------------------*- swift -*-===//
 //
 // This source file is part of the Swift Argument Parser open source project
@@ -20,7 +20,7 @@ var package = Package(
             targets: ["ArgumentParser"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.0.0")
+        .package(url: "https://github.com/apple/swift-docc-plugin", branch: "main")
     ],
     targets: [
         .target(
