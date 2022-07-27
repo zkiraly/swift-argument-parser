@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct Example: ParsableCommand {
     @Flag(help: "Display extra information while processing.")
     var verbose = false
@@ -19,6 +19,6 @@ struct Example: ParsableCommand {
     @Argument(help: "The input file.")
     var inputFile: String?
 }
-// MARK: Hide
+// snippet.hide
 
 Example.main()

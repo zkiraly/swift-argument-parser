@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 enum CacheMethod: String, EnumerableFlag {
     case inMemoryCache
     case persistentCache
@@ -27,4 +27,3 @@ struct Example: ParsableCommand {
         print(colors)
     }
 }
-// MARK: Hide

@@ -44,7 +44,7 @@ Counting words in 'readme.md' and writing the result into 'readme.counts'.
 
 We'll define the initial version of the command as a type that conforms to the `ParsableCommand` protocol:
 
-@Snippet(path: "swift-argument-parser/GettingStarted/GettingStarted1-first")
+@Snippet(path: "swift-argument-parser/snippets/GettingStarted1-first")
 
 In the code above, the `inputFile` and `outputFile` properties use the `@Argument` property wrapper. `ArgumentParser` uses this wrapper to denote a positional command-line input — because `inputFile` is specified first in the `Count` type, it's the first value read from the command line, and `outputFile` is read second.
 
@@ -64,7 +64,7 @@ Counting words in 'readme.md' and writing the result into 'readme.counts'.
 
 We do this by using the `@Option` property wrapper instead of `@Argument`:
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/GettingStarted2-options")
+@Snippet(path: "swift-argument-parser/snippets/GettingStarted2-options")
 
 The `@Option` property wrapper denotes a command-line input that looks like `--name <value>`, deriving its name from the name of your property. 
 
@@ -88,7 +88,7 @@ Counting words in 'readme.md' and writing the result into 'readme.counts'.
 
 Let's change our `Count` type to look like this:
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/GettingStarted3-verbose")
+@Snippet(path: "swift-argument-parser/snippets/GettingStarted3-verbose")
 
 The `@Flag` property wrapper denotes a command-line input that looks like `--name`, deriving its name from the name of your property. Flags are most frequently used for Boolean values, like the `verbose` property here.
 
@@ -108,7 +108,7 @@ Counting words in 'readme.md' and writing the result into 'readme.counts'.
 
 Customize the input names by passing `name` parameters to the `@Option` and `@Flag` initializers:
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/GettingStarted4-custom")
+@Snippet(path: "swift-argument-parser/snippets/GettingStarted4-custom")
 
 The default name specification is `.long`, which uses a property's name with a two-dash prefix. `.short` uses only the first letter of a property's name with a single-dash prefix, and allows combining groups of short options. You can specify custom short and long names with the `.customShort(_:)` and `.customLong(_:)` methods, respectively, or use the combined `.shortAndLong` property to specify the common case of both the short and long derived names.
 
@@ -129,7 +129,7 @@ OPTIONS:
 
 This is a great start — you can see that all the custom names are visible, and the help shows that values are expected for the `--input` and `--output` options. However, our custom options and flag don't have any descriptive text. Let's add that now by passing string literals as the `help` parameter:
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/GettingStarted5-help")
+@Snippet(path: "swift-argument-parser/snippets/GettingStarted5-help")
 
 The help screen now includes descriptions for each parameter:
 
@@ -149,4 +149,4 @@ OPTIONS:
 
 As promised, here's the complete `count` command, for your experimentation:
 
-@Snippet(path: "swift-argument-parser/ArgumentParser/GettingStarted6-complete")
+@Snippet(path: "swift-argument-parser/snippets/GettingStarted6-complete")

@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct Parent: ParsableCommand {
     static let configuration = CommandConfiguration(
         subcommands: [Child.self],
@@ -19,6 +19,6 @@ struct Parent: ParsableCommand {
         var host: String
     }
 }
-// MARK: Hide
+// snippet.hide
 
 Parent.main()

@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct Path: ExpressibleByArgument {
     var pathString: String
 
@@ -20,4 +20,3 @@ struct Path: ExpressibleByArgument {
 struct Example: ParsableCommand {
     @Argument var inputFile: Path
 }
-// MARK: Hide

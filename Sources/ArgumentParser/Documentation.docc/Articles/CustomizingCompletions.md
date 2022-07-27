@@ -8,16 +8,16 @@ Provide custom shell completions for your command-line tool's arguments and opti
 
 When declaring an option or argument, you can customize the completions that are offered by specifying a `CompletionKind`. With this completion kind you can specify that the value should be a file, a directory, or one of a list of strings:
 
-@Snippet(path: "swift-argument-parser/Completions/Completions1")
+@Snippet(path: "swift-argument-parser/snippets/Completions1")
 
 The generated completion script will suggest only file names for the `--input` option, only directory names for `--output-dir`, and only the strings `markdown` and `rst` for `--format`. The `--compression` option uses the default completions for a `CaseIterable` type, so the completion script will suggest `zip` and `gzip`.
 
 You can define the default completion kind for custom `ExpressibleByArgument` types by implementing `static var defaultCompletionKind: CompletionKind`. For example, any arguments or options with this `File` type will automatically use files for completions:
 
-@Snippet(path: "swift-argument-parser/Completions/Completions2")
+@Snippet(path: "swift-argument-parser/snippets/Completions2")
 
 For even more control over the suggested completions, you can specify a function that will be called during completion by using the `.custom` completion kind.
 
-@Snippet(path: "swift-argument-parser/Completions/Completions3")
+@Snippet(path: "swift-argument-parser/snippets/Completions3")
 
 In this example, when a user requests completions for the `--target` option, the completion script runs the `SwiftRun` command-line tool with a special syntax, calling the `listExecutables` function with an array of the arguments given so far.

@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  GettingStarted2.swift
 //
@@ -6,7 +6,7 @@
 //  Created by Zsolt Kiraly on 1/25/22.
 //
 import ArgumentParser
-// MARK: Show
+// snippet.show
 struct Count: ParsableCommand {
     @Option var inputFile: String
     @Option var outputFile: String

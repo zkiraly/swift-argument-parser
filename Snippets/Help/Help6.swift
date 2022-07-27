@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,13 +8,10 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct Example: ParsableCommand {
     @Flag(help: .hidden)
     var experimentalEnableWidgets: Bool = false
 }
-// MARK: Hide
-
-
-
+// snippet.hide
 Example.main()

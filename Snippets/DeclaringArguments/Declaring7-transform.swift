@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 enum Format {
     case text
     case other(String)
@@ -26,4 +26,3 @@ struct Example: ParsableCommand {
     @Argument(transform: Format.init)
     var format: Format
 }
-// MARK: Hide

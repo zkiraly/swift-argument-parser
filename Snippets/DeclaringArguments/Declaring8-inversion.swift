@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct Example: ParsableCommand {
     @Flag(inversion: .prefixedNo)
     var index = true
@@ -20,4 +20,3 @@ struct Example: ParsableCommand {
         print(index, requiredElement)
     }
 }
-// MARK: Hide

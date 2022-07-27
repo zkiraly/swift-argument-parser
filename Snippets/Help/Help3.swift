@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct Repeat: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "Repeats your input phrase.",
@@ -23,6 +23,6 @@ struct Repeat: ParsableCommand {
         while true { print(phrase) }
     }
 }
-// MARK: Hide
+// snippet.hide
 
 Repeat.main()

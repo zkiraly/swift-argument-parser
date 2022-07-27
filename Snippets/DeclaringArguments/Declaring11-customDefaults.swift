@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 enum CustomFlag: String, EnumerableFlag {
     case foo, bar, baz
 }
@@ -32,4 +32,3 @@ struct Example: ParsableCommand {
     @Argument
     var arrayArgument = ["quux", "quuz"]
 }
-// MARK: Hide

@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct Example: ParsableCommand {
     @Flag var verbose = false
     @Option var name: String
@@ -18,4 +18,3 @@ struct Example: ParsableCommand {
         print("Verbose: \(verbose), name: \(name), file: \(file ?? "none")")
     }
 }
-// MARK: Hide

@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct Example: ParsableCommand {
     static let configuration = CommandConfiguration(
         helpNames: [.long, .customShort("?")])
@@ -20,7 +20,7 @@ struct Example: ParsableCommand {
         printHistory(depth: historyDepth)
     }
 }
-// MARK: Hide
+// snippet.hide
 
 extension Example { // printHistory
     func printHistory(depth: Int) { /* _ */ }

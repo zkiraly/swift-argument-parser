@@ -1,5 +1,4 @@
-// MARK: Hide
-
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +7,7 @@
 //
 
 import ArgumentParser
-// MARK: Show
+// snippet.show
 struct Count: ParsableCommand {
     @Option var inputFile: String
     @Option var outputFile: String

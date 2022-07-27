@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct Lucky: ParsableCommand {
   @Argument var numbers = [7, 14, 21]
 
@@ -19,4 +19,3 @@ struct Lucky: ParsableCommand {
     """)
   }
 }
-// MARK: Hide

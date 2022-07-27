@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  File
@@ -8,12 +8,12 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 func listExecutables(_ arguments: [String]) -> [String] {
     // Generate the list of executables in the current directory
-    // MARK: Hide
+    // snippet.hide
     return [""]
-    // MARK: Show
+    // snippet.show
 }
 
 struct SwiftRun {

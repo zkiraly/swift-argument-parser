@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  GettingStarted1.swift
 //
@@ -6,7 +6,7 @@
 //  Created by Zsolt Kiraly on 1/25/22.
 //
 
-// MARK: Show
+// snippet.show
 import ArgumentParser
 
 struct Count: ParsableCommand {

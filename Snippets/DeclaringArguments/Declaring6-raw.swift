@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 enum ReleaseMode: String, ExpressibleByArgument {
     case debug, release
 }
@@ -20,4 +20,3 @@ struct Example: ParsableCommand {
         print(mode)
     }
 }
-// MARK: Hide

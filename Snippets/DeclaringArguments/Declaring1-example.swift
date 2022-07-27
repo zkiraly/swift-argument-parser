@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -7,7 +7,7 @@
 //
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct Example: ParsableCommand {
     @Argument var files: [String] = []
     @Option var count: Int?
@@ -15,4 +15,3 @@ struct Example: ParsableCommand {
     @Flag var verbose = false
     @Flag var stripWhitespace = false
 }
-// MARK: Hide

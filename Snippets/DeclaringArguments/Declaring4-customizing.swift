@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct Example: ParsableCommand {
     @Flag(name: .long)  // Same as the default
     var stripWhitespace = false
@@ -22,4 +22,3 @@ struct Example: ParsableCommand {
     @Option(name: [.customShort("I"), .long])
     var inputFile: String
 }
-// MARK: Hide

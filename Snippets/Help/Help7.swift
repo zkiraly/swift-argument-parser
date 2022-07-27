@@ -1,4 +1,4 @@
-//MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -25,13 +25,13 @@ struct Repeat: ParsableCommand {
     }
 }
 
-// MARK: Show
+// snippet.show
 let help = Repeat.helpMessage()
 // `help` matches the output above
 
 let fortyColumnHelp = Repeat.helpMessage(columns: 40)
 // `fortyColumnHelp` is the same help screen, but wrapped to 40 columns
-// MARK: Hide
+// snippet.hide
 print(help)
 
 Repeat.main()
