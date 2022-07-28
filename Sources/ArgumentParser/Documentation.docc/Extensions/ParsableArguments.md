@@ -2,8 +2,6 @@
 
 ## Topics
 
-
-
 ### Handling Validation
 
 - ``validate()-5r0ge``
@@ -19,7 +17,7 @@
 
 ### Generating Help Text
 
-- ``helpMessage(columns:)``
+- ``helpMessage(includeHidden:columns:)``
 
 ### Handling Errors
 

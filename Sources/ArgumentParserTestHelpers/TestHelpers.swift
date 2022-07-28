@@ -9,7 +9,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-import ArgumentParser
+@testable import ArgumentParser
 import ArgumentParserToolInfo
 import XCTest
 
@@ -113,28 +113,63 @@ public func AssertEqualStringsIgnoringTrailingWhitespace(_ string1: String, _ st
 }
 
 public func AssertHelp<T: ParsableArguments>(
-  for _: T.Type, equals expected: String,
-  file: StaticString = #file, line: UInt = #line
+  _ visibility: ArgumentVisibility,
+  for _: T.Type,
+  equals expected: String,
+  file: StaticString = #file,
+  line: UInt = #line
 ) {
+  let flag: String
+  let includeHidden: Bool
+
+  switch visibility.base {
+  case .default:
+    flag = "--help"
+    includeHidden = false
+  case .hidden:
+    flag = "--help-hidden"
+    includeHidden = true
+  case .private:
+    XCTFail("Should not be called.")
+    return
+  }
+
   do {
-    _ = try T.parse(["-h"])
-    XCTFail(file: (file), line: line)
+    _ = try T.parse([flag])
+    XCTFail(file: file, line: line)
   } catch {
     let helpString = T.fullMessage(for: error)
     AssertEqualStringsIgnoringTrailingWhitespace(
       helpString, expected, file: file, line: line)
   }
-  
-  let helpString = T.helpMessage()
+
+  let helpString = T.helpMessage(includeHidden: includeHidden, columns: nil)
   AssertEqualStringsIgnoringTrailingWhitespace(
     helpString, expected, file: file, line: line)
 }
 
 public func AssertHelp<T: ParsableCommand, U: ParsableCommand>(
-  for _: T.Type, root _: U.Type, equals expected: String,
-  file: StaticString = #file, line: UInt = #line
+  _ visibility: ArgumentVisibility,
+  for _: T.Type,
+  root _: U.Type,
+  equals expected: String,
+  file: StaticString = #file,
+  line: UInt = #line
 ) {
-  let helpString = U.helpMessage(for: T.self)
+  let includeHidden: Bool
+
+  switch visibility.base {
+  case .default:
+    includeHidden = false
+  case .hidden:
+    includeHidden = true
+  case .private:
+    XCTFail("Should not be called.")
+    return
+  }
+
+  let helpString = U.helpMessage(
+    for: T.self, includeHidden: includeHidden, columns: nil)
   AssertEqualStringsIgnoringTrailingWhitespace(
     helpString, expected, file: file, line: line)
 }
@@ -177,10 +212,22 @@ extension XCTest {
     exitCode: ExitCode = .success,
     file: StaticString = #file, line: UInt = #line) throws
   {
-    let splitCommand = command.split(separator: " ")
-    let arguments = splitCommand.dropFirst().map(String.init)
-    
-    let commandName = String(splitCommand.first!)
+    try AssertExecuteCommand(
+      command: command.split(separator: " ").map(String.init),
+      expected: expected,
+      exitCode: exitCode,
+      file: file,
+      line: line)
+  }
+
+  public func AssertExecuteCommand(
+    command: [String],
+    expected: String? = nil,
+    exitCode: ExitCode = .success,
+    file: StaticString = #file, line: UInt = #line) throws
+  {
+    let arguments = Array(command.dropFirst())
+    let commandName = String(command.first!)
     let commandURL = debugURL.appendingPathComponent(commandName)
     guard (try? commandURL.checkResourceIsReachable()) ?? false else {
       XCTFail("No executable at '\(commandURL.standardizedFileURL.path)'.",
@@ -214,7 +261,7 @@ extension XCTest {
     
     let outputData = output.fileHandleForReading.readDataToEndOfFile()
     let outputActual = String(data: outputData, encoding: .utf8)!.trimmingCharacters(in: .whitespacesAndNewlines)
-    
+        
     let errorData = error.fileHandleForReading.readDataToEndOfFile()
     let errorActual = String(data: errorData, encoding: .utf8)!.trimmingCharacters(in: .whitespacesAndNewlines)
     
@@ -275,5 +322,33 @@ extension XCTest {
     #else
     throw XCTSkip("Not supported on this platform")
     #endif
+  }
+
+  public func AssertGenerateManual(
+    singlePage: Bool,
+    command: String,
+    expected: String,
+    file: StaticString = #file,
+    line: UInt = #line
+  ) throws {
+    let commandURL = debugURL.appendingPathComponent(command)
+    var command = [
+      "generate-manual", commandURL.path,
+      "--date", "1996-05-12",
+      "--section", "9",
+      "--authors", "Jane Appleseed",
+      "--authors", "<johnappleseed@apple.com>",
+      "--authors", "The Appleseeds<appleseeds@apple.com>",
+      "--output-directory", "-",
+    ]
+    if singlePage {
+      command.append("--single-page")
+    }
+    try AssertExecuteCommand(
+      command: command,
+      expected: expected,
+      exitCode: .success,
+      file: file,
+      line: line)
   }
 }

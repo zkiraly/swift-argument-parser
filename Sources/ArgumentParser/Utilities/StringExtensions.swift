@@ -9,7 +9,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-extension String {
+extension StringProtocol where SubSequence == Substring {
   func wrapped(to columns: Int, wrappingIndent: Int = 0) -> String {
     let columns = columns - wrappingIndent
     guard columns > 0 else {
@@ -96,7 +96,7 @@ extension String {
   ///     "myURLProperty".convertedToSnakeCase(separator: "-")
   ///     // my-url-property
   func convertedToSnakeCase(separator: Character = "_") -> String {
-    guard !isEmpty else { return self }
+    guard !isEmpty else { return "" }
     var result = ""
     // Whether we should append a separator when we see a uppercase character.
     var separateOnUppercase = true
@@ -138,44 +138,105 @@ extension String {
     let columns = target.count
     
     if rows <= 0 || columns <= 0 {
-      return max(rows, columns)
+      return Swift.max(rows, columns)
     }
     
-    var matrix = Array(repeating: Array(repeating: 0, count: columns + 1), count: rows + 1)
-    
-    for row in 1...rows {
-      matrix[row][0] = row
+    // Trim common prefix and suffix
+    var selfStartTrim = self.startIndex
+    var targetStartTrim = target.startIndex
+    while selfStartTrim < self.endIndex &&
+          targetStartTrim < target.endIndex &&
+            self[selfStartTrim] == target[targetStartTrim] {
+      self.formIndex(after: &selfStartTrim)
+      target.formIndex(after: &targetStartTrim)
     }
-    for column in 1...columns {
-      matrix[0][column] = column
-    }
-    
-    for row in 1...rows {
-      for column in 1...columns {
-        let source = self[self.index(self.startIndex, offsetBy: row - 1)]
-        let target = target[target.index(target.startIndex, offsetBy: column - 1)]
-        let cost = source == target ? 0 : 1
-        
-        matrix[row][column] = Swift.min(
-          matrix[row - 1][column] + 1,
-          matrix[row][column - 1] + 1,
-          matrix[row - 1][column - 1] + cost
-        )
+
+    var selfEndTrim = self.endIndex
+    var targetEndTrim = target.endIndex
+
+    while selfEndTrim > selfStartTrim &&
+          targetEndTrim > targetStartTrim {
+      let selfIdx = self.index(before: selfEndTrim)
+      let targetIdx = target.index(before: targetEndTrim)
+
+      guard self[selfIdx] == target[targetIdx] else {
+        break
       }
+
+      selfEndTrim = selfIdx
+      targetEndTrim = targetIdx
+    }
+
+    // Equal strings
+    guard !(selfStartTrim == self.endIndex &&
+          targetStartTrim == target.endIndex) else {
+      return 0
     }
     
-    return matrix.last!.last!
+    // After trimming common prefix and suffix, self is empty.
+    guard selfStartTrim < selfEndTrim else {
+      return target.distance(from: targetStartTrim,
+                             to: targetEndTrim)
+    }
+
+    // After trimming common prefix and suffix, target is empty.
+    guard targetStartTrim < targetEndTrim else {
+      return distance(from: selfStartTrim,
+                      to: selfEndTrim)
+    }
+
+    let newSelf = self[selfStartTrim..<selfEndTrim]
+    let newTarget = target[targetStartTrim..<targetEndTrim]
+
+    let m = newSelf.count
+    let n = newTarget.count
+
+    // Initialize the levenshtein matrix with only two rows
+    // current and previous.
+    var previousRow = [Int](repeating: 0, count: n + 1)
+    var currentRow = [Int](0...n)
+
+    var sourceIdx = newSelf.startIndex
+    for i in 1...m {
+      swap(&previousRow, &currentRow)
+      currentRow[0] = i
+
+      var targetIdx = newTarget.startIndex
+      for j in 1...n {
+        // If characteres are equal for the levenshtein algorithm the
+        // minimum will always be the substitution cost, so we can fast
+        // path here in order to avoid min calls.
+        if newSelf[sourceIdx] == newTarget[targetIdx] {
+          currentRow[j] = previousRow[j - 1]
+        } else {
+          let deletion = previousRow[j]
+          let insertion = currentRow[j - 1]
+          let substitution = previousRow[j - 1]
+          currentRow[j] = Swift.min(deletion, Swift.min(insertion, substitution)) + 1
+        }
+        // j += 1
+        newTarget.formIndex(after: &targetIdx)
+      }
+      // i += 1
+      newSelf.formIndex(after: &sourceIdx)
+    }
+    return currentRow[n]
   }
   
   func indentingEachLine(by n: Int) -> String {
-    let hasTrailingNewline = self.last == "\n"
     let lines = self.split(separator: "\n", omittingEmptySubsequences: false)
-    if hasTrailingNewline && lines.last == "" {
-      return lines.dropLast().map { String(repeating: " ", count: n) + $0 }
-        .joined(separator: "\n") + "\n"
-    } else {
-      return lines.map { String(repeating: " ", count: n) + $0 }
-        .joined(separator: "\n")
-    }
+    let spacer = String(repeating: " ", count: n)
+    return lines.map {
+      $0.isEmpty ? $0 : spacer + $0
+    }.joined(separator: "\n")
+  }
+  
+  func hangingIndentingEachLine(by n: Int) -> String {
+    let lines = self.split(
+      separator: "\n",
+      maxSplits: 1,
+      omittingEmptySubsequences: false)
+    guard lines.count == 2 else { return lines.joined(separator: "") }
+    return "\(lines[0])\n\(lines[1].indentingEachLine(by: n))"
   }
 }

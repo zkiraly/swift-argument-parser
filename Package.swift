@@ -23,50 +23,66 @@ var package = Package(
         .package(url: "https://github.com/apple/swift-docc-plugin", branch: "main")
     ],
     targets: [
+        // Core Library
         .target(
             name: "ArgumentParser",
-            dependencies: ["ArgumentParserToolInfo"]),
+            dependencies: ["ArgumentParserToolInfo"],
+            exclude: ["CMakeLists.txt"]),
         .target(
             name: "ArgumentParserTestHelpers",
-            dependencies: ["ArgumentParser", "ArgumentParserToolInfo"]),
+            dependencies: ["ArgumentParser", "ArgumentParserToolInfo"],
+            exclude: ["CMakeLists.txt"]),
         .target(
             name: "ArgumentParserToolInfo",
-            dependencies: []),
+            dependencies: [],
+            exclude: ["CMakeLists.txt"]),
 
-        .target(
+        // Examples
+        .executableTarget(
             name: "roll",
             dependencies: ["ArgumentParser"],
             path: "Examples/roll"),
-        .target(
+        .executableTarget(
             name: "math",
             dependencies: ["ArgumentParser"],
             path: "Examples/math"),
-        .target(
+        .executableTarget(
             name: "repeat",
             dependencies: ["ArgumentParser"],
             path: "Examples/repeat"),
 
-        .target(
-            name: "changelog-authors",
-            dependencies: ["ArgumentParser"],
-            path: "Tools/changelog-authors"),
-
+        // Tests
         .testTarget(
             name: "ArgumentParserEndToEndTests",
-            dependencies: ["ArgumentParser", "ArgumentParserTestHelpers"]),
+            dependencies: ["ArgumentParser", "ArgumentParserTestHelpers"],
+            exclude: ["CMakeLists.txt"]),
         .testTarget(
             name: "ArgumentParserUnitTests",
-            dependencies: ["ArgumentParser", "ArgumentParserTestHelpers"]),
+            dependencies: ["ArgumentParser", "ArgumentParserTestHelpers"],
+            exclude: ["CMakeLists.txt"]),
+        .testTarget(
+            name: "ArgumentParserPackageManagerTests",
+            dependencies: ["ArgumentParser", "ArgumentParserTestHelpers"],
+            exclude: ["CMakeLists.txt"]),
         .testTarget(
             name: "ArgumentParserExampleTests",
-            dependencies: ["ArgumentParserTestHelpers"]),
+            dependencies: ["ArgumentParserTestHelpers"],
+            resources: [.copy("CountLinesTest.txt")]),
     ]
 )
 
-#if swift(>=5.2)
-// Skip if < 5.2 to avoid issue with nested type synthesized 'CodingKeys'
-package.targets.append(
-    .testTarget(
-        name: "ArgumentParserPackageManagerTests",
-        dependencies: ["ArgumentParser", "ArgumentParserTestHelpers"]))
+#if swift(>=5.6) && os(macOS)
+package.targets.append(contentsOf: [
+    // Examples
+    .executableTarget(
+        name: "count-lines",
+        dependencies: ["ArgumentParser"],
+        path: "Examples/count-lines"),
+
+    // Tools
+    .executableTarget(
+        name: "changelog-authors",
+        dependencies: ["ArgumentParser"],
+        path: "Tools/changelog-authors"),
+    ])
 #endif

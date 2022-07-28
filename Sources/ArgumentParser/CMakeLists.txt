@@ -6,6 +6,7 @@ add_library(ArgumentParser
 
   "Parsable Properties/Argument.swift"
   "Parsable Properties/ArgumentHelp.swift"
+  "Parsable Properties/ArgumentVisibility.swift"
   "Parsable Properties/CompletionKind.swift"
   "Parsable Properties/Errors.swift"
   "Parsable Properties/Flag.swift"
@@ -13,6 +14,7 @@ add_library(ArgumentParser
   "Parsable Properties/Option.swift"
   "Parsable Properties/OptionGroup.swift"
 
+  "Parsable Types/AsyncParsableCommand.swift"
   "Parsable Types/CommandConfiguration.swift"
   "Parsable Types/EnumerableFlag.swift"
   "Parsable Types/ExpressibleByArgument.swift"

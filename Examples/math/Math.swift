@@ -11,6 +11,7 @@
 
 import ArgumentParser
 
+@main
 struct Math: ParsableCommand {
     // Customize your command's help and subcommands by implementing the
     // `configuration` property.
@@ -175,7 +176,7 @@ extension Math.Statistics {
                 let squaredErrors = values
                     .map { $0 - mean }
                     .map { $0 * $0 }
-                let variance = squaredErrors.reduce(0, +)
+                let variance = squaredErrors.reduce(0, +) / Double(values.count)
                 let result = variance.squareRoot()
                 print(result)
             }
@@ -242,5 +243,3 @@ func customCompletion(_ s: [String]) -> [String] {
     ? ["aardvark", "aaaaalbert"]
     : ["hello", "helicopter", "heliotrope"]
 }
-
-Math.main()

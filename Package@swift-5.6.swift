@@ -1,4 +1,4 @@
-// swift-tools-version:5.5
+// swift-tools-version:5.6
 //===----------------------------------------------------------*- swift -*-===//
 //
 // This source file is part of the Swift Argument Parser open source project
@@ -12,7 +12,7 @@
 
 import PackageDescription
 
-let package = Package(
+var package = Package(
     name: "swift-argument-parser",
     products: [
         .library(
@@ -21,6 +21,7 @@ let package = Package(
     ],
     dependencies: [],
     targets: [
+        // Core Library
         .target(
             name: "ArgumentParser",
             dependencies: ["ArgumentParserToolInfo"],
@@ -31,9 +32,19 @@ let package = Package(
             exclude: ["CMakeLists.txt"]),
         .target(
             name: "ArgumentParserToolInfo",
-            dependencies: [],
+            dependencies: [ ],
             exclude: ["CMakeLists.txt"]),
 
+        // Plugins
+        .plugin(
+            name: "GenerateManualPlugin",
+            capability: .command(
+                intent: .custom(
+                    verb: "experimental-generate-manual",
+                    description: "Generate a manual entry for a specified target.")),
+            dependencies: ["generate-manual"]),
+
+        // Examples
         .executableTarget(
             name: "roll",
             dependencies: ["ArgumentParser"],
@@ -47,25 +58,47 @@ let package = Package(
             dependencies: ["ArgumentParser"],
             path: "Examples/repeat"),
 
+        // Tools
         .executableTarget(
-            name: "changelog-authors",
-            dependencies: ["ArgumentParser"],
-            path: "Tools/changelog-authors"),
-
+            name: "generate-manual",
+            dependencies: ["ArgumentParser", "ArgumentParserToolInfo"],
+            path: "Tools/generate-manual"),
+    
+        // Tests
         .testTarget(
             name: "ArgumentParserEndToEndTests",
+            dependencies: ["ArgumentParser", "ArgumentParserTestHelpers"],
+            exclude: ["CMakeLists.txt"]),
+        .testTarget(
+            name: "ArgumentParserExampleTests",
+            dependencies: ["ArgumentParserTestHelpers"],
+            resources: [.copy("CountLinesTest.txt")]),
+        .testTarget(
+            name: "ArgumentParserGenerateManualTests",
+            dependencies: ["ArgumentParserTestHelpers"]),
+        .testTarget(
+            name: "ArgumentParserPackageManagerTests",
             dependencies: ["ArgumentParser", "ArgumentParserTestHelpers"],
             exclude: ["CMakeLists.txt"]),
         .testTarget(
             name: "ArgumentParserUnitTests",
             dependencies: ["ArgumentParser", "ArgumentParserTestHelpers"],
             exclude: ["CMakeLists.txt"]),
-        .testTarget(
-            name: "ArgumentParserPackageManagerTests",
-            dependencies: ["ArgumentParser", "ArgumentParserTestHelpers"],
-            exclude: ["CMakeLists.txt"]),
-        .testTarget(
-            name: "ArgumentParserExampleTests",
-            dependencies: ["ArgumentParserTestHelpers"]),
     ]
 )
+
+#if os(macOS)
+package.targets.append(contentsOf: [
+    // Examples
+    .executableTarget(
+        name: "count-lines",
+        dependencies: ["ArgumentParser"],
+        path: "Examples/count-lines"),
+
+    // Tools
+    .executableTarget(
+        name: "changelog-authors",
+        dependencies: ["ArgumentParser"],
+        path: "Tools/changelog-authors"),
+    ])
+#endif

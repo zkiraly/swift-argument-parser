@@ -1,14 +1,14 @@
 # Manual Parsing and Testing
 
-Provide your own array of command-line inputs and work with parsed results by calling alternatives to `main()`.
+Provide your own array of command-line inputs or work directly with parsed command-line arguments.
 
 ## Overview
 
-For most programs, calling the static `main()` method on the root command type is all that's necessary. That single call parses the command-line arguments to find the correct command from your tree of nested subcommands, instantiates and validates the result, and executes the chosen command. For more control, however, you can perform each of those steps manually.
+For most programs, denoting the root command type as `@main` is all that's necessary. As the program's entry point, that type parses the command-line arguments to find the correct command from your tree of nested subcommands, instantiates and validates the result, and executes the chosen command. For more control, however, you can perform each of those steps manually.
 
 ## Parsing Arguments
 
-For simple Swift scripts, and for those who prefer a straight-down-the-left-edge-of-the-screen scripting style, you can define a single `ParsableArguments` type to parse explicitly from the command-line arguments.
+For simple Swift scripts, and for those who prefer a straight-down-the-left-edge-of-the-screen scripting style, you can define a single ``ParsableArguments`` type to parse explicitly from the command-line arguments.
 
 Let's implement the `Select` command discussed in <doc:Validation>, but using a scripty style instead of the typical command. First, we define the options as a `ParsableArguments` type:
 
@@ -18,13 +18,13 @@ The next step is to parse our options from the command-line input:
 
 @Snippet(path: "swift-argument-parser/snippets/Parsing2")
 
-The static `parseOrExit()` method either returns a fully initialized instance of the type, or exits with an error message and code. Alternatively, you can call the throwing `parse()` method if you'd like to catch any errors that arise during parsing.
+The static ``ParsableArguments/parseOrExit(_:)`` method either returns a fully initialized instance of the type, or exits with an error message and code. Alternatively, you can call the throwing ``ParsableArguments/parse(_:)`` method if you'd like to catch any errors that arise during parsing.
 
 We can perform validation on the inputs and exit the script if necessary:
 
 @Snippet(path: "swift-argument-parser/snippets/Parsing3")
 
-As you would expect, the `exit(withError:)` method includes usage information when you pass it a `ValidationError`.
+As you would expect, the ``ParsableArguments/exit(withError:)`` method includes usage information when you pass it a ``ValidationError``.
 
 Finally, we print out the requested number of elements:
 
@@ -32,9 +32,9 @@ Finally, we print out the requested number of elements:
 
 ## Parsing Commands
 
-Manually parsing commands is a little more complex than parsing a simple `ParsableArguments` type. The result of parsing from a tree of subcommands may be of a different type than the root of the tree, so the static `parseAsRoot()` method returns a type-erased `ParsableCommand`.
+Manually parsing commands is a little more complex than parsing a simple `ParsableArguments` type. The result of parsing from a tree of subcommands may be of a different type than the root of the tree, so the static ``ParsableCommand/parseAsRoot(_:)`` method returns a type-erased ``ParsableCommand``.
 
-Let's see how this works by using the `Math` command and subcommands defined in [Commands and Subcommands](./CommandsAndSubcommands.md). This time, instead of calling `Math.main()`, we'll call `Math.parseAsRoot()`, and switch over the result:
+Let's see how this works by using the `Math` command and subcommands defined in <doc:CommandsAndSubcommands>. This time, instead of calling `Math.main()`, we'll call `Math.parseAsRoot()`, and switch over the result:
 
 @Snippet(path: "swift-argument-parser/snippets/Parsing5")
 

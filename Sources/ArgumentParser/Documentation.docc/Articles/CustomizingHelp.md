@@ -1,6 +1,6 @@
 # Customizing Help
 
-Support your users (and yourself) by providing rich help for arguments and commands.
+Support your users (and yourself) by providing rich help for arguments, options, and flags.
 
 ## Overview
 
@@ -26,7 +26,7 @@ OPTIONS:
 
 ## Customizing Help for Arguments
 
-You can have more control over the help text by passing an `ArgumentHelp` instance instead. The `ArgumentHelp` type can include an abstract (which is what the string literal becomes), a discussion, a value name to use in the usage string, and a Boolean that indicates whether the argument should be visible in the help screen.
+For more control over the help text, pass an ``ArgumentHelp`` instance instead of a string literal. The `ArgumentHelp` type can include an abstract (which is what the string literal becomes), a discussion, a value name to use in the usage string, and a visibility level for that argument.
 
 Here's the same command with some extra customization:
 
@@ -47,89 +47,70 @@ OPTIONS:
   -h, --help              Show help information.
 ```
 
-## Customizing Help for Commands
+### Controlling Argument Visibility
 
-In addition to configuring the command name and subcommands, as described in <doc:CommandsAndSubcommands>, you can also configure a command's help text by providing an abstract and discussion.
+You can specify the visibility of any argument, option, or flag.
 
-@Snippet(path: "swift-argument-parser/snippets/Help3")
+```swift
+struct Example: ParsableCommand {
+    @Flag(help: ArgumentHelp("Show extra info.", visibility: .hidden))
+    var verbose: Bool = false
 
-The abstract and discussion appear in the generated help screen:
+    @Flag(help: ArgumentHelp("Use the legacy format.", visibility: .private))
+    var useLegacyFormat: Bool = false
+}
+```
+
+The `--verbose` flag is only visible in the extended help screen. The `--use-legacy-format` stays hidden even in the extended help screen, due to its `.private` visibility. 
 
 ```
-% repeat --help
-OVERVIEW: Repeats your input phrase.
-
-Prints to stdout forever, or until you halt the program.
-
-USAGE: repeat <phrase>
-
-ARGUMENTS:
-  <phrase>                The phrase to repeat.
+% example --help
+USAGE: example
 
 OPTIONS:
   -h, --help              Show help information.
 
-% repeat hello!
-hello!
-hello!
-hello!
-hello!
-hello!
-hello!
-...
-```
-
-## Modifying the Help Flag Names
-
-Users can see the help screen for a command by passing either the `-h` or the `--help` flag, by default. If you need to use one of those flags for another purpose, you can provide alternative names when configuring a root command.
-
-@Snippet(path: "swift-argument-parser/snippets/Help4")
-
-When running the command, `-h` matches the short name of the `historyDepth` property, and `-?` displays the help screen.
-
-```
-% example -h 3
-...
-% example -?
-USAGE: example --history-depth <history-depth>
-
-ARGUMENTS:
-  <phrase>                The phrase to repeat.
+% example --help-hidden
+USAGE: example [--verbose]
 
 OPTIONS:
-  -h, --history-depth     The number of history entries to show.
-  -?, --help              Show help information.
+  --verbose               Show extra info.
+  -h, --help              Show help information.
 ```
 
-When not overridden, custom help names are inherited by subcommands. In this example, the parent command defines `--help` and `-?` as its help names:
+Alternatively, you can group multiple arguments, options, and flags together as part of a ``ParsableArguments`` type, and set the visibility when including them as an `@OptionGroup` property.
 
-@Snippet(path: "swift-argument-parser/snippets/Help5")
+```swift
+struct ExperimentalFlags: ParsableArguments {
+    @Flag(help: "Use the remote access token. (experimental)")
+    var experimentalUseRemoteAccessToken: Bool = false
 
-The `child` subcommand inherits the parent's help names, allowing the user to distinguish between the host argument (`-h`) and help (`-?`).
+    @Flag(help: "Use advanced security. (experimental)")
+    var experimentalAdvancedSecurity: Bool = false
+}
+
+struct Example: ParsableCommand {
+    @OptionGroup(visibility: .hidden)
+    var flags: ExperimentalFlags
+}
+```
+
+The members of `ExperimentalFlags` are only shown in the extended help screen:
 
 ```
-% parent child -h 192.0.0.0
-...
-% parent child -?
-USAGE: parent child --host <host>
+% example --help
+USAGE: example
 
 OPTIONS:
-  -h, --host <host>       The host the server will run on.
-  -?, --help              Show help information.
+  -h, --help              Show help information.
+
+% example --help-hidden
+USAGE: example [--experimental-use-remote-access-token] [--experimental-advanced-security]
+
+OPTIONS:
+  --experimental-use-remote-access-token
+                          Use the remote access token. (experimental)
+  --experimental-advanced-security
+                          Use advanced security. (experimental)
+  -h, --help              Show help information.
 ```
-
-## Hiding Arguments and Commands
-
-You may want to suppress features under development or experimental flags from the generated help screen. You can hide an argument or a subcommand by passing `visibility: .hidden` to the property wrapper or `CommandConfiguration` initializers, respectively.
-
-`ArgumentHelp` includes a `.hidden` static property that makes it even simpler to hide arguments:
-
-@Snippet(path: "swift-argument-parser/snippets/Help6")
-
-## Generating Help Text Programmatically
-
-The help screen is automatically shown to users when they call your command with the help flag. You can generate the same text from within your program by calling the `helpMessage()` method.
-
-@Snippet(path: "swift-argument-parser/snippets/Help7")
-
-When generating help text for a subcommand, call `helpMessage(for:)` on the `ParsableCommand` type that represents the root of the command tree and pass the subcommand type as a parameter to ensure the correct display.
