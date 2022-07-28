@@ -8,6 +8,7 @@
 import ArgumentParser
 import Foundation
 
+@main
 struct Math: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "A utility for performing maths.",
@@ -115,7 +116,7 @@ extension Math.Statistics {
                 let squaredErrors = values
                     .map { $0 - mean }
                     .map { $0 * $0 }
-                let variance = squaredErrors.reduce(0, +)
+                let variance = squaredErrors.reduce(0, +) / Double(values.count)
                 let result = variance.squareRoot()
                 print(result)
             }
@@ -128,5 +129,3 @@ extension Math.Statistics.Average {
     func calculateMedian() -> Double { return 0 }
     func calculateMode() -> [Double] { return [ 0 ] }
 }
-
-Math.main()
