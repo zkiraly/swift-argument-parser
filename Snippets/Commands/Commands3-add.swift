@@ -8,6 +8,7 @@
 import ArgumentParser
 import Foundation
 
+@main
 struct Math: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "A utility for performing maths.",
@@ -72,21 +73,17 @@ extension Math.Statistics {
     struct Average: ParsableCommand {
         static var configuration = CommandConfiguration(
             abstract: "Print the average of the values.")
-
+        
         enum Kind: String, ExpressibleByArgument {
             case mean, median, mode
         }
-
+        
         @Option(help: "The kind of average to provide.")
         var kind: Kind = .mean
-
+        
         @Argument(help: "A group of floating-point values to operate on.")
         var values: [Double] = []
-
-        func calculateMean() -> Double { return 0 }
-        func calculateMedian() -> Double { return 0 }
-        func calculateMode() -> [Double] { return [ 0 ] }
-
+        
         mutating func run() {
             switch kind {
             case .mean:
@@ -101,15 +98,15 @@ extension Math.Statistics {
             }
         }
     }
-
+    
     struct StandardDeviation: ParsableCommand {
         static var configuration = CommandConfiguration(
             commandName: "stdev",
             abstract: "Print the standard deviation of the values.")
-
+        
         @Argument(help: "A group of floating-point values to operate on.")
         var values: [Double] = []
-
+        
         mutating func run() {
             if values.isEmpty {
                 print(0.0)
@@ -119,7 +116,7 @@ extension Math.Statistics {
                 let squaredErrors = values
                     .map { $0 - mean }
                     .map { $0 * $0 }
-                let variance = squaredErrors.reduce(0, +)
+                let variance = squaredErrors.reduce(0, +) / Double(values.count)
                 let result = variance.squareRoot()
                 print(result)
             }
@@ -127,4 +124,8 @@ extension Math.Statistics {
     }
 }
 
-Math.main()
+extension Math.Statistics.Average {
+    func calculateMean() -> Double { return 0 }
+    func calculateMedian() -> Double { return 0 }
+    func calculateMode() -> [Double] { return [ 0 ] }
+}

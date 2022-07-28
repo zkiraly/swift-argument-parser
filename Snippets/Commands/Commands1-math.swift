@@ -7,6 +7,8 @@
 //
 import ArgumentParser
 import Foundation
+
+@main
 // snippet.show
 struct Math: ParsableCommand {
     static var configuration = CommandConfiguration(
@@ -15,6 +17,7 @@ struct Math: ParsableCommand {
         defaultSubcommand: Add.self)
 }
 // snippet.hide
+
 extension Math {
     struct Options: ParsableArguments {
         @Flag(name: [.long, .customShort("x")], help: "Use hexadecimal notation for the result.")
@@ -33,8 +36,8 @@ extension Math {
         @OptionGroup var options: Math.Options
 
         mutating func run() {
-//            let result = options.values.reduce(0, +)
-//            print(format(result: result, usingHex: options.hexadecimalOutput))
+            let result = options.values.reduce(0, +)
+            print(format(result, usingHex: options.hexadecimalOutput))
         }
     }
 
@@ -45,8 +48,8 @@ extension Math {
         @OptionGroup var options: Math.Options
 
         mutating func run() {
-//            let result = options.values.reduce(1, *)
-//            print(format(result: result, usingHex: options.hexadecimalOutput))
+            let result = options.values.reduce(1, *)
+            print(format(result, usingHex: options.hexadecimalOutput))
         }
     }
 }
@@ -124,5 +127,3 @@ extension Math {
             : String(result)
     }
 }
-
-Math.main()
