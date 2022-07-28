@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  File
@@ -9,7 +9,7 @@
 import ArgumentParser
 import Foundation
 
-// MARK: Show
+// snippet.show
 struct LineCount: ParsableCommand {
     @Argument var file: String
 
@@ -19,4 +19,3 @@ struct LineCount: ParsableCommand {
         print(lines.count)
     }
 }
-// MARK: Hide

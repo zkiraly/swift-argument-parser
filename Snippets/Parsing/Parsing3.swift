@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //
@@ -15,7 +15,7 @@ struct SelectOptions: ParsableArguments {
 
 let options = SelectOptions.parseOrExit()
 
-// MARK: Show
+// snippet.show
 guard options.elements.count >= options.count else {
     let error = ValidationError("Please specify a 'count' less than the number of elements.")
     SelectOptions.exit(withError: error)

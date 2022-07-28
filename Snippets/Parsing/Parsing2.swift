@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //
@@ -13,6 +13,6 @@ struct SelectOptions: ParsableArguments {
     @Argument var elements: [String] = []
 }
 
-// MARK: Show
+// snippet.show
 let options = SelectOptions.parseOrExit()
 

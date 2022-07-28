@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //
@@ -13,12 +13,12 @@ struct SelectOptions: ParsableArguments {
     @Argument var elements: [String] = []
 }
 
-// MARK: Show
+// snippet.show
 let noShoutingArguments = CommandLine.arguments.dropFirst().filter { phrase in
     phrase.uppercased() != phrase
 }
 let options = SelectOptions.parseOrExit(noShoutingArguments)
-// MARK: Hide
+// snippet.hide
 
 guard options.elements.count >= options.count else {
     let error = ValidationError("Please specify a 'count' less than the number of elements.")

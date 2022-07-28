@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //
@@ -20,7 +20,7 @@ guard options.elements.count >= options.count else {
     SelectOptions.exit(withError: error)
 }
 
-// MARK: Show
+// snippet.show
 let chosen = options.elements
     .shuffled()
     .prefix(options.count)

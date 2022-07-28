@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct SelectOptions: ParsableArguments {
     @Option var count: Int = 1
     @Argument var elements: [String] = []

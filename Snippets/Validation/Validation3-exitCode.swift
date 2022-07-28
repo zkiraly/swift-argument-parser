@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  File
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct RuntimeError: Error, CustomStringConvertible {
     var description: String
 }
@@ -24,7 +24,7 @@ struct Example: ParsableCommand {
         }
     }
 }
-// MARK: Hide
+// snippet.hide
 
 extension Example {
     struct ExampleCore {

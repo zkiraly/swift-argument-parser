@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //
@@ -130,7 +130,7 @@ extension Math.Statistics.Average {
 
 }
 
-// MARK: Show
+// snippet.show
 do {
     var command = try Math.parseAsRoot()
 

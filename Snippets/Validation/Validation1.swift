@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  File
@@ -8,7 +8,7 @@
 
 import ArgumentParser
 
-// MARK: Show
+// snippet.show
 struct Select: ParsableCommand {
     @Option var count: Int = 1
     @Argument var elements: [String] = []
@@ -31,4 +31,3 @@ struct Select: ParsableCommand {
         print(elements.shuffled().prefix(count).joined(separator: "\n"))
     }
 }
-// MARK: Hide

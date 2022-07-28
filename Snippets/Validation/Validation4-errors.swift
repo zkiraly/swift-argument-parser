@@ -1,4 +1,4 @@
-// MARK: Hide
+// snippet.hide
 //
 //  File.swift
 //  File
@@ -9,7 +9,7 @@
 import ArgumentParser
 import Foundation
 
-// MARK: Show
+// snippet.show
 struct ExampleTransformError: Error, CustomStringConvertible {
   var description: String
 }
