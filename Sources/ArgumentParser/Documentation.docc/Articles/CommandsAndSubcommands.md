@@ -37,7 +37,7 @@ SUBCOMMANDS:
 
 Start by defining the root `Math` command. You can provide a static `configuration` property for a command that specifies its subcommands and a default subcommand, if any.
 
-@Snippet(path: "swift-argument-parser/snippets/Commands", slice: "math")
+@Snippet(path: "swift-argument-parser/snippets/Commands1-math")
 
 `Math` lists its three subcommands by their types; we'll see the definitions of `Add`, `Multiply`, and `Statistics` below. `Add` is also given as a default subcommand — this means that it is selected if a user leaves out a subcommand name:
 
@@ -50,19 +50,19 @@ Next, define a `ParsableArguments` type with properties that will be shared acro
 
 In this case, the `Options` type accepts a `--hexadecimal-output` flag and expects a list of integers.
 
-@Snippet(path: "swift-argument-parser/snippets/Commands", slice: "hex")
+@Snippet(path: "swift-argument-parser/snippets/Commands2-hex")
 
 It's time to define our first two subcommands: `Add` and `Multiply`. Both of these subcommands include the arguments defined in the `Options` type by denoting that property with the `@OptionGroup` property wrapper. `@OptionGroup` doesn't define any new arguments for a command; instead, it splats in the arguments defined by another `ParsableArguments` type.
 
-@Snippet(path: "swift-argument-parser/snippets/Commands", slice: "add")
+@Snippet(path: "swift-argument-parser/snippets/Commands3-add")
 
 Next, we'll define `Statistics`, the third subcommand of `Math`. The `Statistics` command specifies a custom command name (`stats`) in its configuration, overriding the default derived from the type name (`statistics`). It also declares two additional subcommands, meaning that it acts as a forked branch in the command tree, and not a leaf.
 
-@Snippet(path: "swift-argument-parser/snippets/Commands", slice: "stats")
+@Snippet(path: "swift-argument-parser/snippets/Commands4-stats")
 
 Let's finish our subcommands with the `Average` and `StandardDeviation` types. Each of them has slightly different arguments, so they don't use the `Options` type defined above. Each subcommand is ultimately independent and can specify a combination of shared and unique arguments.
 
-@Snippet(path: "swift-argument-parser/snippets/Commands", slice: "average")
+@Snippet(path: "swift-argument-parser/snippets/Commands5-average")
 
 Last but not least, we kick off parsing and execution with a call to the static `main` method on the type at the root of our command tree. The call to main parses the command-line arguments, determines whether a subcommand was selected, and then instantiates and calls the `run()` method on that particular subcommand.
 
