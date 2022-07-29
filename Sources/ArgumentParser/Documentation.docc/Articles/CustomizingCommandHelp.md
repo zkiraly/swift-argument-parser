@@ -6,31 +6,7 @@ Define your command's abstract, extended discussion, or usage string, and set th
 
 In addition to configuring the command name and subcommands, as described in <doc:CommandsAndSubcommands>, you can also configure a command's help text by providing an abstract, discussion, or custom usage string.
 
-```swift
-struct Repeat: ParsableCommand {
-    static var configuration = CommandConfiguration(
-        abstract: "Repeats your input phrase.",
-        usage: """
-            repeat <phrase>
-            repeat --count <count> <phrase>
-            """,
-        discussion: """
-            Prints to stdout forever, or until you halt the program.
-            """)
-
-    @Argument(help: "The phrase to repeat.")
-    var phrase: String
-
-    @Option(help: "How many times to repeat.")
-    var count: Int?
-
-    mutating func run() throws {
-        for _ in 0..<(count ?? 2) {
-            print(phrase) 
-        }
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/snippets/Customizing1")
 
 The customized components now appear in the generated help screen:
 
@@ -62,20 +38,7 @@ hello!
 ## Modifying the Help Flag Names
 
 Users can see the help screen for a command by passing either the `-h` or the `--help` flag, by default. If you need to use one of those flags for another purpose, you can provide alternative names when configuring a root command.
-
-```swift
-struct Example: ParsableCommand {
-    static let configuration = CommandConfiguration(
-        helpNames: [.long, .customShort("?")])
-
-    @Option(name: .shortAndLong, help: "The number of history entries to show.")
-    var historyDepth: Int
-
-    mutating func run() throws {
-        printHistory(depth: historyDepth)
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/snippets/Customizing2")
 
 When running the command, `-h` matches the short name of the `historyDepth` property, and `-?` displays the help screen.
 
@@ -97,18 +60,7 @@ OPTIONS:
 
 When not overridden, custom help names are inherited by subcommands. In this example, the parent command defines `--help` and `-?` as its help names:
 
-```swift
-struct Parent: ParsableCommand {
-    static let configuration = CommandConfiguration(
-        subcommands: [Child.self],
-        helpNames: [.long, .customShort("?")])
-
-    struct Child: ParsableCommand {
-        @Option(name: .shortAndLong, help: "The host the server will run on.")
-        var host: String
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/snippets/Customizing3")
 
 The `child` subcommand inherits the parent's help names, allowing the user to distinguish between the host argument (`-h`) and help (`-?`).
 
@@ -131,12 +83,6 @@ You may not want to show every one of your command as part of your command-line 
 
 The help screen is automatically shown to users when they call your command with the help flag. You can generate the same text from within your program by calling the `helpMessage()` method.
 
-```swift
-let help = Repeat.helpMessage()
-// `help` matches the output above
-
-let fortyColumnHelp = Repeat.helpMessage(columns: 40)
-// `fortyColumnHelp` is the same help screen, but wrapped to 40 columns
-```
+@Snippet(path: "swift-argument-parser/snippets/Customizing4")
 
 When generating help text for a subcommand, call `helpMessage(for:)` on the `ParsableCommand` type that represents the root of the command tree and pass the subcommand type as a parameter to ensure the correct display.

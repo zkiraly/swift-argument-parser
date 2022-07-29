@@ -8,7 +8,6 @@
 import ArgumentParser
 import Foundation
 
-@main
 struct Math: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "A utility for performing maths.",

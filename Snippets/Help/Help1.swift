@@ -20,5 +20,3 @@ struct Example: ParsableCommand {
     var inputFile: String?
 }
 // snippet.hide
-
-Example.main()

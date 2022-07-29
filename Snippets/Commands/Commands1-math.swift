@@ -8,7 +8,6 @@
 import ArgumentParser
 import Foundation
 
-@main
 // snippet.show
 struct Math: ParsableCommand {
     static var configuration = CommandConfiguration(
