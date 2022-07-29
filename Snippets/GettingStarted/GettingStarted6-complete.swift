@@ -10,6 +10,7 @@
 import ArgumentParser
 import Foundation
 
+@main
 struct Count: ParsableCommand {
     static let configuration = CommandConfiguration(abstract: "Word counter.")
     
@@ -65,5 +66,3 @@ struct RuntimeError: Error, CustomStringConvertible {
         self.description = description
     }
 }
-
-Count.main()
