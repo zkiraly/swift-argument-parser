@@ -10,7 +10,6 @@
 import ArgumentParser
 import Foundation
 
-@main
 struct Count: ParsableCommand {
     static let configuration = CommandConfiguration(abstract: "Word counter.")
     

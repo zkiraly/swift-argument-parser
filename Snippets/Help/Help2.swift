@@ -26,4 +26,3 @@ struct Example: ParsableCommand {
 }
 // snippet.hide
 
-Example.main()

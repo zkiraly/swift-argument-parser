@@ -32,6 +32,3 @@ let help = Repeat.helpMessage()
 let fortyColumnHelp = Repeat.helpMessage(columns: 40)
 // `fortyColumnHelp` is the same help screen, but wrapped to 40 columns
 // snippet.hide
-print(help)
-
-Repeat.main()

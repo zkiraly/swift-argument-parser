@@ -20,5 +20,3 @@ struct Parent: ParsableCommand {
     }
 }
 // snippet.hide
-
-Parent.main()

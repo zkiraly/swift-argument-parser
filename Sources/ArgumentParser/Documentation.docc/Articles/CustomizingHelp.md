@@ -6,7 +6,7 @@ Support your users (and yourself) by providing rich help for arguments, options,
 
 You can provide help text when declaring any `@Argument`, `@Option`, or `@Flag` by passing a string literal as the `help` parameter:
 
-@Snippet(path: "swift-argument-parser/snippets/Help1")
+@Snippet(path: "swift-argument-parser/snippets/Help/Help1")
 
 Users see these strings in the automatically-generated help screen, which is triggered by the `-h` or `--help` flags, by default:
 

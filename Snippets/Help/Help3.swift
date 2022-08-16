@@ -24,5 +24,3 @@ struct Repeat: ParsableCommand {
     }
 }
 // snippet.hide
-
-Repeat.main()
