@@ -12,7 +12,7 @@ To validate your commands properties after parsing, implement the ``ParsableArgu
 
 Here's a command that prints out one or more random elements from the list you provide. Its `validate()` method catches three different errors that a user can make and throws a relevant error for each one.
 
-@Snippet(path: "swift-argument-parser/snippets/Validation1")
+@Snippet(path: "swift-argument-parser/Snippets/Validation/Validation1")
 
 When you provide useful error messages, they can guide new users to success with your command-line tool!
 
@@ -38,7 +38,7 @@ hey
 
 The ``ValidationError`` type is a special `ArgumentParser` error — a validation error's message is always accompanied by an appropriate usage string. You can throw other errors, from either the `validate()` or `run()` method to indicate that something has gone wrong that isn't validation-specific. Errors that conform to `CustomStringConvertible` or `LocalizedError` provide the best experience for users.
 
-@Snippet(path: "swift-argument-parser/snippets/Validation2-post")
+@Snippet(path: "swift-argument-parser/Snippets/Validation/Validation2-post")
 
 The throwing `String(contentsOfFile:encoding:)` initializer fails when the user specifies an invalid file. `ArgumentParser` prints its error message to standard error and exits with an error code.
 
@@ -52,7 +52,7 @@ there is no such file.
 
 If you print your error output yourself, you still need to throw an error from `validate()` or `run()`, so that your command exits with the appropriate exit code. To avoid printing an extra error message, use the `ExitCode` error, which has static properties for success, failure, and validation errors, or lets you specify a specific exit code.
 
-@Snippet(path: "swift-argument-parser/snippets/Validation3-exitCode")
+@Snippet(path: "swift-argument-parser/Snippets/Validation/Validation3-exitCode")
 
 ## Handling Transform Errors
 
@@ -60,7 +60,7 @@ During argument and option parsing, you can use a closure to transform the comma
 
 In addition, you can throw your own errors. Errors that conform to `CustomStringConvertible` or `LocalizedError` provide the best experience for users.
 
-@Snippet(path: "swift-argument-parser/snippets/Validation4-errors")
+@Snippet(path: "swift-argument-parser/Snippets/Validation/Validation4-errors")
 
 Throwing from a transform closure benefits users by providing context and can reduce development time by pinpointing issues quickly and more precisely.
 

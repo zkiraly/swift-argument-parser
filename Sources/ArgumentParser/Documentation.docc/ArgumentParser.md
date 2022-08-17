@@ -12,7 +12,7 @@ Decorate each stored property with one of `ArgumentParser`'s property wrappers,
 declare conformance to ``ParsableCommand``,
 and implement your command's logic in its `run()` method.
 
-@Snippet(path: "swift-argument-parser/snippets/Overview")
+@Snippet(path: "swift-argument-parser/Snippets/ArgumentParser/Overview")
 
 When a user executes your command, 
 the `ArgumentParser` library parses the command-line arguments,

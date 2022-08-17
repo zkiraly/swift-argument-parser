@@ -8,14 +8,14 @@
 import ArgumentParser
 import Foundation
 
-// snippet.show
+// snippet.math
 struct Math: ParsableCommand {
     static var configuration = CommandConfiguration(
         abstract: "A utility for performing maths.",
         subcommands: [Add.self, Multiply.self, Statistics.self],
         defaultSubcommand: Add.self)
 }
-// snippet.hide
+// snippet.end
 
 extension Math {
     struct Options: ParsableArguments {

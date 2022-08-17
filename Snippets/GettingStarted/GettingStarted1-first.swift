@@ -23,4 +23,3 @@ struct Count: ParsableCommand {
     }
 }
 
-Count.main()

@@ -12,23 +12,23 @@ For simple Swift scripts, and for those who prefer a straight-down-the-left-edge
 
 Let's implement the `Select` command discussed in <doc:Validation>, but using a scripty style instead of the typical command. First, we define the options as a `ParsableArguments` type:
 
-@Snippet(path: "swift-argument-parser/snippets/Parsing1")
+@Snippet(path: "swift-argument-parser/Snippets/Parsing/Parsing1")
 
 The next step is to parse our options from the command-line input:
 
-@Snippet(path: "swift-argument-parser/snippets/Parsing2")
+@Snippet(path: "swift-argument-parser/Snippets/Parsing/Parsing2")
 
 The static ``ParsableArguments/parseOrExit(_:)`` method either returns a fully initialized instance of the type, or exits with an error message and code. Alternatively, you can call the throwing ``ParsableArguments/parse(_:)`` method if you'd like to catch any errors that arise during parsing.
 
 We can perform validation on the inputs and exit the script if necessary:
 
-@Snippet(path: "swift-argument-parser/snippets/Parsing3")
+@Snippet(path: "swift-argument-parser/Snippets/Parsing/Parsing3")
 
 As you would expect, the ``ParsableArguments/exit(withError:)`` method includes usage information when you pass it a ``ValidationError``.
 
 Finally, we print out the requested number of elements:
 
-@Snippet(path: "swift-argument-parser/snippets/Parsing4")
+@Snippet(path: "swift-argument-parser/Snippets/Parsing/Parsing4")
 
 ## Parsing Commands
 
@@ -36,7 +36,7 @@ Manually parsing commands is a little more complex than parsing a simple `Parsab
 
 Let's see how this works by using the `Math` command and subcommands defined in <doc:CommandsAndSubcommands>. This time, instead of calling `Math.main()`, we'll call `Math.parseAsRoot()`, and switch over the result:
 
-@Snippet(path: "swift-argument-parser/snippets/Parsing5")
+@Snippet(path: "swift-argument-parser/Snippets/Parsing/Parsing5")
 
 Our new logic intercepts the command between validation and running, and outputs an additional message:
 
@@ -55,7 +55,7 @@ All of the parsing methods — `parse()`, `parseOrExit()`, and `parseAsRoot()` �
 
 Let's update our `select` script above to strip out any words that contain all capital letters before parsing the inputs.
 
-@Snippet(path: "swift-argument-parser/snippets/Parsing6")
+@Snippet(path: "swift-argument-parser/Snippets/Parsing/Parsing6")
 
 Now when we call our command, the parser won't even see the capitalized words — `HEY` won't ever be printed:
 
