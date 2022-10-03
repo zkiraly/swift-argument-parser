@@ -12,30 +12,7 @@ To validate your commands properties after parsing, implement the ``ParsableArgu
 
 Here's a command that prints out one or more random elements from the list you provide. Its `validate()` method catches three different errors that a user can make and throws a relevant error for each one.
 
-```swift
-struct Select: ParsableCommand {
-    @Option var count: Int = 1
-    @Argument var elements: [String] = []
-
-    mutating func validate() throws {
-        guard count >= 1 else {
-            throw ValidationError("Please specify a 'count' of at least 1.")
-        }
-
-        guard !elements.isEmpty else {
-            throw ValidationError("Please provide at least one element to choose from.")
-        }
-
-        guard count <= elements.count else {
-            throw ValidationError("Please specify a 'count' less than the number of elements.")
-        }
-    }
-
-    mutating func run() {
-        print(elements.shuffled().prefix(count).joined(separator: "\n"))
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/Validation/Validation1")
 
 When you provide useful error messages, they can guide new users to success with your command-line tool!
 
@@ -61,17 +38,7 @@ hey
 
 The ``ValidationError`` type is a special `ArgumentParser` error — a validation error's message is always accompanied by an appropriate usage string. You can throw other errors, from either the `validate()` or `run()` method to indicate that something has gone wrong that isn't validation-specific. Errors that conform to `CustomStringConvertible` or `LocalizedError` provide the best experience for users.
 
-```swift
-struct LineCount: ParsableCommand {
-    @Argument var file: String
-
-    mutating func run() throws {
-        let contents = try String(contentsOfFile: file, encoding: .utf8)
-        let lines = contents.split(separator: "\n")
-        print(lines.count)
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/Validation/Validation2-post")
 
 The throwing `String(contentsOfFile:encoding:)` initializer fails when the user specifies an invalid file. `ArgumentParser` prints its error message to standard error and exits with an error code.
 
@@ -85,23 +52,7 @@ there is no such file.
 
 If you print your error output yourself, you still need to throw an error from `validate()` or `run()`, so that your command exits with the appropriate exit code. To avoid printing an extra error message, use the `ExitCode` error, which has static properties for success, failure, and validation errors, or lets you specify a specific exit code.
 
-```swift
-struct RuntimeError: Error, CustomStringConvertible {
-    var description: String
-}
-
-struct Example: ParsableCommand {
-    @Argument var inputFile: String
-
-    mutating func run() throws {
-        if !ExampleCore.processFile(inputFile) {
-            // ExampleCore.processFile(_:) prints its own errors
-            // and returns `false` on failure.
-            throw ExitCode.failure
-        }
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/Validation/Validation3-exitCode")
 
 ## Handling Transform Errors
 
@@ -109,36 +60,7 @@ During argument and option parsing, you can use a closure to transform the comma
 
 In addition, you can throw your own errors. Errors that conform to `CustomStringConvertible` or `LocalizedError` provide the best experience for users.
 
-```swift
-struct ExampleTransformError: Error, CustomStringConvertible {
-  var description: String
-}
-
-struct ExampleDataModel: Codable {
-  let identifier: UUID
-  let tokens: [String]
-  let tokenCount: Int
-
-  static func dataModel(_ jsonString: String) throws -> ExampleDataModel  {
-    guard let data = jsonString.data(using: .utf8) else { throw ValidationError("Badly encoded string, should be UTF-8") }
-    return try JSONDecoder().decode(ExampleDataModel.self, from: data)
-  }
-}
-
-struct Example: ParsableCommand {
-  // Reads in the argument string and attempts to transform it to
-  // an `ExampleDataModel` object using the `JSONDecoder`. If the
-  // string is not valid JSON, `decode` will throw an error and
-  // parsing will halt.
-  @Argument(transform: ExampleDataModel.dataModel)
-  var inputJSON: ExampleDataModel
-
-  // Specifiying this option will always cause the parser to exit
-  // and print the custom error.
-  @Option(transform: { throw ExampleTransformError(description: "Trying to write to failOption always produces an error. Input: \($0)") })
-  var failOption: String?
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/Validation/Validation4-errors")
 
 Throwing from a transform closure benefits users by providing context and can reduce development time by pinpointing issues quickly and more precisely.
 

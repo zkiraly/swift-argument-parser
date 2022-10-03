@@ -26,15 +26,7 @@ When creating commands, you can define three primary kinds of command-line input
 
 The three preceding examples could be calls of this `Example` command:
 
-```swift
-struct Example: ParsableCommand {
-    @Argument var files: [String] = []
-    @Option var count: Int?
-    @Option var index = 0
-    @Flag var verbose = false
-    @Flag var stripWhitespace = false
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring1-example")
 
 This example shows how `ArgumentParser` provides defaults that speed up your initial development process:
 
@@ -45,12 +37,7 @@ In this example, all of the properties have default values (optional properties 
 
 Users must provide values for all properties with no implicit or specified default. For example, this command would require one integer argument and a string with the key `--user-name`.
 
-```swift
-struct Example: ParsableCommand {
-    @Option var userName: String
-    @Argument var value: Int
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring2-defaults")
 
 When called without both values, the command exits with an error:
 
@@ -67,18 +54,7 @@ Usage: example --user-name <user-name> <value>
 
 When providing a default value for an array property, any user-supplied values replace the entire default.
 
-```swift
-struct Lucky: ParsableCommand {
-    @Argument var numbers = [7, 14, 21]
-
-    mutating func run() throws {
-        print("""
-        Your lucky numbers are:
-        \(numbers.map(String.init).joined(separator: " "))
-        """)
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring3-array")
 
 ```
 % lucky 
@@ -95,21 +71,7 @@ By default, options and flags derive the name that you use on the command line f
 
 You can override this default by specifying one or more name specifications in the `@Option` or `@Flag` initializers. This command demonstrates the four name specifications:
 
-```swift
-struct Example: ParsableCommand {
-    @Flag(name: .long)  // Same as the default
-    var stripWhitespace = false
-
-    @Flag(name: .short)
-    var verbose = false
-
-    @Option(name: .customLong("count"))
-    var iterationCount: Int
-
-    @Option(name: [.customShort("I"), .long])
-    var inputFile: String
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring4-customizing")
 
 * Specifying `.long` or `.short` uses the property's name as the source of the command-line name. Long names use the whole name, prefixed by two dashes, while short names are a single character prefixed by a single dash. In this example, the `stripWhitespace` and `verbose` flags are specified in this way:
 
@@ -138,35 +100,11 @@ Arguments and options can be parsed from any type that conforms to the ``Express
 
 You can make your own custom types conform to `ExpressibleByArgument` by implementing ``ExpressibleByArgument/init(argument:)``:
 
-```swift
-struct Path: ExpressibleByArgument {
-    var pathString: String
-
-    init?(argument: String) {
-        self.pathString = argument
-    }
-}
-
-struct Example: ParsableCommand {
-    @Argument var inputFile: Path
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring5-types")
 
 The library provides a default implementation for `RawRepresentable` types, like string-backed enumerations, so you only need to declare conformance.
 
-```swift
-enum ReleaseMode: String, ExpressibleByArgument {
-    case debug, release
-}
-
-struct Example: ParsableCommand {
-    @Option var mode: ReleaseMode
-
-    mutating func run() throws {
-        print(mode)
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring6-raw")
 
 The user can provide the raw values on the command line, which are then converted to your custom type. Only valid values are allowed:
 
@@ -179,25 +117,7 @@ Error: The value 'future' is invalid for '--mode <mode>'
 
 To use a non-`ExpressibleByArgument` type for an argument or option, you can instead provide a throwing `transform` function that converts the parsed string to your desired type. This is a good idea for custom types that are more complex than a `RawRepresentable` type, or for types you don't define yourself.
 
-```swift
-enum Format {
-    case text
-    case other(String)
-
-    init(_ string: String) throws {
-        if string == "text" {
-            self = .text
-        } else {
-            self = .other(string)
-        }
-    }
-}
-
-struct Example: ParsableCommand {
-    @Argument(transform: Format.init)
-    var format: Format
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring7-transform")
 
 Throw an error from the `transform` function to indicate that the user provided an invalid value for that type. See <doc:Validation> for more about customizing `transform` function errors.
 
@@ -205,19 +125,7 @@ Throw an error from the `transform` function to indicate that the user provided 
 
 Flags are most frequently used for `Bool` properties. You can generate a `true`/`false` pair of flags by specifying a flag inversion:
 
-```swift
-struct Example: ParsableCommand {
-    @Flag(inversion: .prefixedNo)
-    var index = true
-
-    @Flag(inversion: .prefixedEnableDisable)
-    var requiredElement: Bool
-
-    mutating func run() throws {
-        print(index, requiredElement)
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring8-inversion")
 
 When declaring a flag with an inversion, set the default by specifying `true` or `false` as the property's initial value. If you want to require that the user specify one of the two inversions, leave off the default value.
 
@@ -234,26 +142,7 @@ Error: Missing one of: '--enable-required-element', '--disable-required-element'
 
 To create a flag with custom names for a Boolean value, to provide an exclusive choice between more than two names, or for collecting multiple values from a set of defined choices, define an enumeration that conforms to the `EnumerableFlag` protocol.
 
-```swift
-enum CacheMethod: String, EnumerableFlag {
-    case inMemoryCache
-    case persistentCache
-}
-
-enum Color: String, EnumerableFlag {
-    case pink, purple, silver
-}
-
-struct Example: ParsableCommand {
-    @Flag var cacheMethod: CacheMethod
-    @Flag var colors: [Color] = []
-
-    mutating func run() throws {
-        print(cacheMethod)
-        print(colors)
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring9-customFlag")
 
 The flag names in this case are drawn from the raw values — for information about customizing the names and help text, see the  ``EnumerableFlag`` documentation.
 
@@ -267,16 +156,7 @@ Error: Missing one of: '--in-memory-cache', '--persistent-cache'
 
 Finally, when a flag is of type `Int`, the value is parsed as a count of the number of times that the flag is specified.
 
-```swift
-struct Example: ParsableCommand {
-    @Flag(name: .shortAndLong)
-    var verbose: Int
-
-    mutating func run() throws {
-        print("Verbosity level: \(verbose)")
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring10-intFlag")
 
 In this example, `verbose` defaults to zero, and counts the number of times that `-v` or `--verbose` is given.
 
@@ -292,31 +172,7 @@ Verbosity level: 4
 
 You can specify default values for almost all supported argument, option, and flag types using normal property initialization syntax:
 
-```swift
-enum CustomFlag: String, EnumerableFlag {
-    case foo, bar, baz
-}
-
-struct Example: ParsableCommand {
-    @Flag
-    var booleanFlag = false
-
-    @Flag
-    var arrayFlag: [CustomFlag] = [.foo, .baz]
-
-    @Option
-    var singleOption = 0
-
-    @Option
-    var arrayOption = ["bar", "qux"]
-
-    @Argument
-    var singleArgument = "quux"
-
-    @Argument
-    var arrayArgument = ["quux", "quuz"]
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring11-customDefaults")
 
 This includes all of the variants of the argument types above (including `@Option(transform: ...)`, etc.), with a few notable exceptions:
 - `Optional`-typed values (which default to `nil` and for which a default would not make sense, as the value could never be `nil`)
@@ -333,17 +189,7 @@ When parsing a list of command-line inputs, `ArgumentParser` distinguishes betwe
 
 For example, this command defines a `--verbose` flag, a `--name` option, and an optional `file` argument:
 
-```swift
-struct Example: ParsableCommand {
-    @Flag var verbose = false
-    @Option var name: String
-    @Argument var file: String?
-
-    mutating func run() throws {
-        print("Verbose: \(verbose), name: \(name), file: \(file ?? "none")")
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring12-parsing")
 
 When calling this command, the value for `--name` must be given immediately after the key. If the `--verbose` flag is placed in between, parsing fails with an error:
 
@@ -380,16 +226,7 @@ Verbose: true, name: Tomás, file: none
 
 The default strategy for parsing options as arrays is to read each value from a key-value pair. For example, this command expects zero or more input file names:
 
-```swift
-struct Example: ParsableCommand {
-    @Option var file: [String] = []
-    @Flag var verbose = false
-
-    mutating func run() throws {
-        print("Verbose: \(verbose), files: \(file)")
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring13-altParsing")
 
 As with single values, each time the user provides the `--file` key, they must also provide a value:
 
@@ -431,16 +268,7 @@ Verbose: false, files: ["file1.swift", "file2.swift", "--verbose"]
 
 The default strategy for parsing arrays of positional arguments is to ignore  all dash-prefixed command-line inputs. For example, this command accepts a `--verbose` flag and a list of file names as positional arguments:
 
-```swift
-struct Example: ParsableCommand {
-    @Flag var verbose = false
-    @Argument var files: [String] = []
-
-    mutating func run() throws {
-        print("Verbose: \(verbose), files: \(files)")
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/DeclaringArguments/Declaring14-altPositional")
 
 The `files` argument array uses the default `.remaining` parsing strategy, so it only picks up values that don't have a prefix:
 

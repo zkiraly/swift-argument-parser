@@ -37,14 +37,7 @@ SUBCOMMANDS:
 
 Start by defining the root `Math` command. You can provide a static ``ParsableCommand/configuration-35km1`` property for a command that specifies its subcommands and a default subcommand, if any.
 
-```swift
-struct Math: ParsableCommand {
-    static var configuration = CommandConfiguration(
-        abstract: "A utility for performing maths.",
-        subcommands: [Add.self, Multiply.self, Statistics.self],
-        defaultSubcommand: Add.self)
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/Commands/Commands1-math", slice: "math")
 
 `Math` lists its three subcommands by their types; we'll see the definitions of `Add`, `Multiply`, and `Statistics` below. `Add` is also given as a default subcommand — this means that it is selected if a user leaves out a subcommand name:
 
@@ -57,121 +50,19 @@ Next, define a ``ParsableArguments`` type with properties that will be shared ac
 
 In this case, the `Options` type accepts a `--hexadecimal-output` flag and expects a list of integers.
 
-```swift
-struct Options: ParsableArguments {
-    @Flag(name: [.long, .customShort("x")], help: "Use hexadecimal notation for the result.")
-    var hexadecimalOutput = false
-
-    @Argument(help: "A group of integers to operate on.")
-    var values: [Int]
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/Commands/Commands2-hex")
 
 It's time to define our first two subcommands: `Add` and `Multiply`. Both of these subcommands include the arguments defined in the `Options` type by denoting that property with the `@OptionGroup` property wrapper (see ``OptionGroup``). `@OptionGroup` doesn't define any new arguments for a command; instead, it splats in the arguments defined by another `ParsableArguments` type.
 
-```swift
-extension Math {
-    struct Add: ParsableCommand {
-        static var configuration
-            = CommandConfiguration(abstract: "Print the sum of the values.")
-
-        @OptionGroup var options: Math.Options
-
-        mutating func run() {
-            let result = options.values.reduce(0, +)
-            print(format(result: result, usingHex: options.hexadecimalOutput))
-        }
-    }
-
-    struct Multiply: ParsableCommand {
-        static var configuration
-            = CommandConfiguration(abstract: "Print the product of the values.")
-
-        @OptionGroup var options: Math.Options
-
-        mutating func run() {
-            let result = options.values.reduce(1, *)
-            print(format(result: result, usingHex: options.hexadecimalOutput))
-        }
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/Commands/Commands3-add")
 
 Next, we'll define `Statistics`, the third subcommand of `Math`. The `Statistics` command specifies a custom command name (`stats`) in its configuration, overriding the default derived from the type name (`statistics`). It also declares two additional subcommands, meaning that it acts as a forked branch in the command tree, and not a leaf.
 
-```swift
-extension Math {
-    struct Statistics: ParsableCommand {
-        static var configuration = CommandConfiguration(
-            commandName: "stats",
-            abstract: "Calculate descriptive statistics.",
-            subcommands: [Average.self, StandardDeviation.self])
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/Commands/Commands4-stats")
 
 Let's finish our subcommands with the `Average` and `StandardDeviation` types. Each of them has slightly different arguments, so they don't use the `Options` type defined above. Each subcommand is ultimately independent and can specify a combination of shared and unique arguments.
 
-```swift
-extension Math.Statistics {
-    struct Average: ParsableCommand {
-        static var configuration = CommandConfiguration(
-            abstract: "Print the average of the values.")
-
-        enum Kind: String, ExpressibleByArgument {
-            case mean, median, mode
-        }
-
-        @Option(help: "The kind of average to provide.")
-        var kind: Kind = .mean
-
-        @Argument(help: "A group of floating-point values to operate on.")
-        var values: [Double] = []
-
-        func calculateMean() -> Double { ... }
-        func calculateMedian() -> Double { ... }
-        func calculateMode() -> [Double] { ... }
-
-        mutating func run() {
-            switch kind {
-            case .mean:
-                print(calculateMean())
-            case .median:
-                print(calculateMedian())
-            case .mode:
-                let result = calculateMode()
-                    .map(String.init(describing:))
-                    .joined(separator: " ")
-                print(result)
-            }
-        }
-    }
-
-    struct StandardDeviation: ParsableCommand {
-        static var configuration = CommandConfiguration(
-            commandName: "stdev",
-            abstract: "Print the standard deviation of the values.")
-
-        @Argument(help: "A group of floating-point values to operate on.")
-        var values: [Double] = []
-
-        mutating func run() {
-            if values.isEmpty {
-                print(0.0)
-            } else {
-                let sum = values.reduce(0, +)
-                let mean = sum / Double(values.count)
-                let squaredErrors = values
-                    .map { $0 - mean }
-                    .map { $0 * $0 }
-                let variance = squaredErrors.reduce(0, +) / Double(values.count)
-                let result = variance.squareRoot()
-                print(result)
-            }
-        }
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/Commands/Commands5-average")
 
 Last but not least, we add the `@main` attribute to the root of our command tree, to tell the compiler to use that as the program's entry point. Upon execution, this parses the command-line arguments, determines whether a subcommand was selected, and then instantiates and calls the `run()` method on that particular subcommand.
 
