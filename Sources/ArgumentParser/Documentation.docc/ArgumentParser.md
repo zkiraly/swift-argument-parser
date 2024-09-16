@@ -12,25 +12,7 @@ Decorate each stored property with one of `ArgumentParser`'s property wrappers,
 declare conformance to ``ParsableCommand``,
 and implement your command's logic in its `run()` method.
 
-```swift
-import ArgumentParser
-
-@main
-struct Repeat: ParsableCommand {
-    @Argument(help: "The phrase to repeat.")
-    var phrase: String
-
-    @Option(help: "The number of times to repeat 'phrase'.")
-    var count: Int? = nil
-
-    mutating func run() throws {
-        let repeatCount = count ?? 2
-        for _ in 0..<repeatCount {
-            print(phrase)
-        }
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/ArgumentParser/Overview")
 
 When a user executes your command, 
 the `ArgumentParser` library parses the command-line arguments,

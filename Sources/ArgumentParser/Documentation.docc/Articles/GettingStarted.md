@@ -42,24 +42,7 @@ Counting words in 'readme.md' and writing the result into 'readme.counts'.
 
 We'll define the initial version of the command as a type that conforms to the `ParsableCommand` protocol:
 
-```swift
-import ArgumentParser
-
-@main
-struct Count: ParsableCommand {
-    @Argument var inputFile: String
-    @Argument var outputFile: String
-    
-    mutating func run() throws {
-        print("""
-            Counting words in '\(inputFile)' \
-            and writing the result into '\(outputFile)'.
-            """)
-            
-        // Read 'inputFile', count the words, and save to 'outputFile'.
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/GettingStarted/GettingStarted1-first")
 
 In the code above, the `inputFile` and `outputFile` properties use the `@Argument` property wrapper. `ArgumentParser` uses this wrapper to denote a positional command-line input — because `inputFile` is specified first in the `Count` type, it's the first value read from the command line, and `outputFile` is the second.
 
@@ -79,21 +62,7 @@ Counting words in 'readme.md' and writing the result into 'readme.counts'.
 
 We do this by using the `@Option` property wrapper instead of `@Argument`:
 
-```swift
-struct Count: ParsableCommand {
-    @Option var inputFile: String
-    @Option var outputFile: String
-    
-    mutating func run() throws {
-        print("""
-            Counting words in '\(inputFile)' \
-            and writing the result into '\(outputFile)'.
-            """)
-            
-        // Read 'inputFile', count the words, and save to 'outputFile'.
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/GettingStarted/GettingStarted2-options")
 
 The `@Option` property wrapper denotes a command-line input that looks like `--name <value>`, deriving its name from the name of your property. 
 
@@ -117,24 +86,7 @@ Counting words in 'readme.md' and writing the result into 'readme.counts'.
 
 Let's change our `Count` type to look like this:
 
-```swift
-struct Count: ParsableCommand {
-    @Option var inputFile: String
-    @Option var outputFile: String
-    @Flag var verbose = false
-    
-    mutating func run() throws {
-        if verbose {
-            print("""
-                Counting words in '\(inputFile)' \
-                and writing the result into '\(outputFile)'.
-                """)
-        }
- 
-        // Read 'inputFile', count the words, and save to 'outputFile'.
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/GettingStarted/GettingStarted3-verbose")
 
 The `@Flag` property wrapper denotes a command-line input that looks like `--name`, deriving its name from the name of your property. Flags are most frequently used for Boolean values, like the `verbose` property here.
 
@@ -154,20 +106,7 @@ Counting words in 'readme.md' and writing the result into 'readme.counts'.
 
 Customize the input names by passing `name` parameters to the `@Option` and `@Flag` initializers:
 
-```swift
-struct Count: ParsableCommand {
-    @Option(name: [.short, .customLong("input")])
-    var inputFile: String
-
-    @Option(name: [.short, .customLong("output")])
-    var outputFile: String
-
-    @Flag(name: .shortAndLong)
-    var verbose = false
-    
-    mutating func run() throws { ... }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/GettingStarted/GettingStarted4-custom")
 
 The default name specification is `.long`, which uses a property's name with a two-dash prefix. `.short` uses only the first letter of a property's name with a single-dash prefix, and allows combining groups of short options. You can specify custom short and long names with the `.customShort(_:)` and `.customLong(_:)` methods, respectively, or use the combined `.shortAndLong` property to specify the common case of both the short and long derived names.
 
@@ -188,20 +127,7 @@ OPTIONS:
 
 This is a great start — you can see that all the custom names are visible, and the help shows that values are expected for the `--input` and `--output` options. However, our custom options and flag don't have any descriptive text. Let's add that now by passing string literals as the `help` parameter:
 
-```swift
-struct Count: ParsableCommand {
-    @Option(name: [.short, .customLong("input")], help: "A file to read.")
-    var inputFile: String
-
-    @Option(name: [.short, .customLong("output")], help: "A file to save word counts to.")
-    var outputFile: String
-
-    @Flag(name: .shortAndLong, help: "Print status updates while counting.")
-    var verbose = false
-
-    mutating func run() throws { ... }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/GettingStarted/GettingStarted5-help")
 
 The help screen now includes descriptions for each parameter:
 
@@ -221,64 +147,4 @@ OPTIONS:
 
 As promised, here's the complete `count` command, for your experimentation:
 
-```swift
-import ArgumentParser
-import Foundation
-
-@main
-struct Count: ParsableCommand {
-    static let configuration = CommandConfiguration(abstract: "Word counter.")
-    
-    @Option(name: [.short, .customLong("input")], help: "A file to read.")
-    var inputFile: String
-
-    @Option(name: [.short, .customLong("output")], help: "A file to save word counts to.")
-    var outputFile: String
-
-    @Flag(name: .shortAndLong, help: "Print status updates while counting.")
-    var verbose = false
-
-    mutating func run() throws {
-        if verbose {
-            print("""
-                Counting words in '\(inputFile)' \
-                and writing the result into '\(outputFile)'.
-                """)
-        }
- 
-        guard let input = try? String(contentsOfFile: inputFile) else {
-            throw RuntimeError("Couldn't read from '\(inputFile)'!")
-        }
-        
-        let words = input.components(separatedBy: .whitespacesAndNewlines)
-            .map { word in
-                word.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-                    .lowercased()
-            }
-            .compactMap { word in word.isEmpty ? nil : word }
-        
-        let counts = Dictionary(grouping: words, by: { $0 })
-            .mapValues { $0.count }
-            .sorted(by: { $0.value > $1.value })
-        
-        if verbose {
-            print("Found \(counts.count) words.")
-        }
-        
-        let output = counts.map { word, count in "\(word): \(count)" }
-            .joined(separator: "\n")
-        
-        guard let _ = try? output.write(toFile: outputFile, atomically: true, encoding: .utf8) else {
-            throw RuntimeError("Couldn't write to '\(outputFile)'!")
-        }
-    }
-}
-
-struct RuntimeError: Error, CustomStringConvertible {
-    var description: String
-    
-    init(_ description: String) {
-        self.description = description
-    }
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/GettingStarted/GettingStarted6-complete")

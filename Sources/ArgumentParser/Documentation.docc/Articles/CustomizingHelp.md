@@ -6,18 +6,7 @@ Support your users (and yourself) by providing rich help for arguments, options,
 
 You can provide help text when declaring any `@Argument`, `@Option`, or `@Flag` by passing a string literal as the `help` parameter:
 
-```swift
-struct Example: ParsableCommand {
-    @Flag(help: "Display extra information while processing.")
-    var verbose = false
-
-    @Option(help: "The number of extra lines to show.")
-    var extraLines = 0
-
-    @Argument(help: "The input file.")
-    var inputFile: String?
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/Help/Help1")
 
 Users see these strings in the automatically-generated help screen, which is triggered by the `-h` or `--help` flags, by default:
 
@@ -41,23 +30,7 @@ For more control over the help text, pass an ``ArgumentHelp`` instance instead o
 
 Here's the same command with some extra customization:
 
-```swift
-struct Example: ParsableCommand {
-    @Flag(help: "Display extra information while processing.")
-    var verbose = false
-
-    @Option(help: ArgumentHelp(
-        "The number of extra lines to show.",
-        valueName: "n"))
-    var extraLines = 0
-
-    @Argument(help: ArgumentHelp(
-        "The input file.",
-        discussion: "If no input file is provided, the tool reads from stdin.",
-        valueName: "file"))
-    var inputFile: String?
-}
-```
+@Snippet(path: "swift-argument-parser/Snippets/Help/Help2")
 
 ...and the help screen:
 
